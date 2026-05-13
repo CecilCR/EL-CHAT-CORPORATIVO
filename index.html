@@ -3,39 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caso 5 — La Escalada en el Chat Corporativo</title>
-<meta property="og:title" content="Caso 5 — Sesgos en la Comunicación Digital">
+<title>Caso 5 - La Escalada en el Chat Corporativo</title>
+<meta property="og:title" content="Caso 5 - Sesgos en la Comunicación Digital">
 <meta property="og:description" content="Herramienta interactiva para analizar sesgos cognitivos en entornos digitales de trabajo">
 <meta property="og:type" content="website">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;650&display=swap" rel="stylesheet">
 <style>
-/* ── VARIABLES ─────────────────────────────────────────────── */
 :root {
   --bg: #f1f0ec;
   --surface: #ffffff;
+  --surface-soft: #faf9f6;
   --border: #d6d2ca;
-}
-  --text:     #1a1917;
-  --muted:    #6b6860;
-  --faint:    #9b9890;
-
-  --accent:   #1a1917;      /* negro para énfasis principal */
-  --mark:     #e8e300;      /* amarillo para un único acento visual */
-  --mark-bg:  #fafadc;
-
-  --red:      #c0392b;
-  --red-bg:   #fdf2f1;
-
-  --step-active: #1a1917;
-  --step-done:   #9b9890;
-  --step-todo:   #d5d3ce;
+  --border-strong: #c8c2b7;
+  --text: #1a1917;
+  --muted: #56524a;
+  --faint: #827d73;
+  --accent: #1a1917;
+  --mark: #e8e300;
+  --mark-bg: #fff9b8;
+  --red: #b83225;
+  --red-bg: #fff0ee;
+  --green: #2e7d32;
+  --green-bg: #eef8f0;
+  --shadow: 0 2px 12px rgba(26, 25, 23, 0.07);
+  --shadow-soft: 0 1px 8px rgba(26, 25, 23, 0.05);
 }
 
-/* ── RESET ──────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.65;
   background: var(--bg);
@@ -43,75 +50,91 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── CONFETTI ─────────────────────────────────────────────── */
-#confetti-container {
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 9999;
-}
-.confetti-piece {
-  position: absolute; width: 7px; height: 7px;
-  top: -10px; opacity: 0.85;
-  animation: confetti-fall linear forwards;
-}
-@keyframes confetti-fall {
-  to { transform: translateY(105vh) rotate(540deg); opacity: 0; }
+button,
+input {
+  font: inherit;
 }
 
-/* ── LAYOUT ─────────────────────────────────────────────────── */
+#confetti-container {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 7px;
+  height: 7px;
+  opacity: 0.85;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(105vh) rotate(540deg);
+    opacity: 0;
+  }
+}
+
 .shell {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 240px minmax(0, 1fr);
   min-height: 100vh;
 }
 
-/* ── SIDEBAR ────────────────────────────────────────────────── */
 .sidebar {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
   position: sticky;
   top: 0;
   height: 100vh;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
   padding: 32px 24px;
 }
 
-.sidebar-case-label {
+.sidebar-case-label,
+.eyebrow,
+.section-title,
+.question-num,
+.intervention-title,
+.results-sublabel,
+.data-cell .lbl {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.8px;
+  font-weight: 650;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--faint);
+}
+
+.sidebar-case-label {
   margin-bottom: 6px;
 }
 
 .sidebar-title {
   font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
+  font-weight: 650;
   line-height: 1.4;
   margin-bottom: 28px;
 }
 
-/* Stepper */
 .stepper {
   display: flex;
-  flex-direction: column;
-  gap: 0;
   flex: 1;
+  flex-direction: column;
 }
 
 .step {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 14px;
   cursor: pointer;
-  padding: 0;
-  position: relative;
 }
 
-/* Vertical line between steps */
 .step:not(:last-child) .step-line-wrap {
   position: absolute;
   left: 10px;
@@ -119,71 +142,83 @@ body {
   bottom: -2px;
   width: 1px;
   background: var(--border);
-  z-index: 0;
 }
 
 .step-node-wrap {
+  z-index: 1;
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   align-items: center;
-  flex-shrink: 0;
   padding-bottom: 24px;
-  z-index: 1;
 }
 
 .step-dot {
+  display: flex;
   width: 21px;
   height: 21px;
-  border-radius: 50%;
-  border: 1.5px solid var(--step-todo);
-  background: var(--bg);
-  display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--bg);
   transition: all 0.25s ease;
-  flex-shrink: 0;
 }
 
 .step-dot-inner {
-  width: 7px; height: 7px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--step-todo);
+  background: var(--border-strong);
   transition: background 0.25s ease;
 }
 
-.step.active .step-dot {
-  border-color: var(--step-active);
-  background: var(--step-active);
+.step-text-wrap {
+  padding-bottom: 24px;
 }
-.step.active .step-dot-inner { background: #fff; }
-
-.step.done .step-dot {
-  border-color: var(--step-done);
-  background: var(--bg);
-}
-.step.done .step-dot-inner { background: var(--step-done); }
-
-.step-text-wrap { padding-bottom: 24px; }
 
 .step-label {
+  padding-top: 2px;
+  color: var(--muted);
   font-size: 13px;
   font-weight: 500;
-  color: var(--muted);
-  transition: color 0.2s;
   line-height: 1.3;
-  padding-top: 2px;
+  transition: color 0.2s;
 }
-
-.step.active .step-label { color: var(--text); font-weight: 600; }
-.step.done .step-label { color: var(--faint); }
 
 .step-sublabel {
-  font-size: 11px;
-  color: var(--faint);
   margin-top: 1px;
+  color: var(--faint);
+  font-size: 11px;
 }
 
-/* Quiz progress at bottom */
+.step.active .step-dot {
+  border-color: var(--text);
+  background: var(--text);
+}
+
+.step.active .step-dot-inner {
+  background: #fff;
+}
+
+.step.done .step-dot {
+  border-color: var(--faint);
+}
+
+.step.done .step-dot-inner {
+  background: var(--faint);
+}
+
+.step.active .step-label {
+  color: var(--text);
+  font-weight: 650;
+}
+
+.step.done .step-label {
+  color: var(--faint);
+}
+
 .sidebar-footer {
   margin-top: auto;
   padding-top: 20px;
@@ -191,97 +226,90 @@ body {
 }
 
 .footer-label {
-  font-size: 11px;
-  color: var(--faint);
   margin-bottom: 8px;
+  color: var(--faint);
+  font-size: 11px;
 }
 
-.mini-bar-wrap {
-  background: var(--bg);
-  border-radius: 3px;
-  height: 3px;
+.mini-bar-wrap,
+.quiz-prog-wrap {
   overflow: hidden;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--border);
 }
 
-.mini-bar-fill {
+.mini-bar-fill,
+.quiz-prog-fill {
   height: 100%;
-  background: var(--text);
   border-radius: 3px;
+  background: var(--text);
   transition: width 0.5s ease;
 }
 
-/* ── MAIN ───────────────────────────────────────────────────── */
 .main {
-  background: var(--bg);
   overflow-y: auto;
+  background: var(--bg);
 }
 
-/* ── PANEL BASE ─────────────────────────────────────────────── */
 .panel {
   display: none;
-  padding: 48px 52px;
   max-width: 760px;
+  padding: 48px 52px;
   animation: enter 0.35s ease;
 }
-.panel.active { display: block; }
 
-@keyframes enter {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+.panel.active {
+  display: block;
 }
 
-/* ── TYPOGRAPHY ─────────────────────────────────────────────── */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .eyebrow {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  color: var(--faint);
   margin-bottom: 10px;
 }
 
-h1.panel-title {
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 1.25;
-  color: var(--text);
+.panel-title {
   margin-bottom: 14px;
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 650;
+  line-height: 1.25;
 }
 
 .lead {
-  font-size: 15px;
-  color: var(--muted);
-  max-width: 560px;
-  line-height: 1.75;
+  max-width: 580px;
   margin-bottom: 32px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.75;
 }
 
 .section-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 14px;
   margin-top: 32px;
+  margin-bottom: 14px;
 }
 
-hr.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 28px 0;
-}
-
-/* ── DATA GRID ──────────────────────────────────────────────── */
 .data-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 10px;
   overflow: hidden;
   margin-bottom: 28px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--border);
+  box-shadow: var(--shadow-soft);
 }
 
 .data-cell {
@@ -290,224 +318,68 @@ hr.divider {
 }
 
 .data-cell .lbl {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--faint);
   margin-bottom: 4px;
 }
 
 .data-cell .val {
-  font-size: 14px;
-  font-weight: 500;
   color: var(--text);
+  font-size: 14px;
+  font-weight: 550;
 }
 
-/* ── HIGHLIGHT BOX ──────────────────────────────────────────── */
 .highlight-box {
-  background: #fff9b8;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border: 1px solid #d9d000;
   border-left: 4px solid var(--mark);
   border-radius: 8px;
-}
-  padding: 16px 20px;
-  font-size: 14px;
+  background: var(--mark-bg);
   color: var(--text);
+  font-size: 14px;
   line-height: 1.7;
-  margin-bottom: 20px;
+  box-shadow: var(--shadow-soft);
 }
 
-/* ── BUTTON ─────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-top: 8px;
   padding: 10px 22px;
-  border-radius: 6px;
   border: 1.5px solid var(--text);
+  border-radius: 6px;
   background: var(--text);
   color: #fff;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 550;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
 }
-.btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  transform: none;
+}
 
 .btn.ghost {
   background: transparent;
   color: var(--text);
 }
-.btn.ghost:hover { background: var(--border); }
 
-.btn.hidden { display: none !important; }
-
-/* ── CHAT ───────────────────────────────────────────────────── */
-..chat-wrap,
-.question-card,
-.persona-card,
-.intervention-box {
-  box-shadow: 0 2px 10px rgba(26, 25, 23, 0.06);
+.btn.ghost:hover {
+  background: var(--border);
 }
 
-  .chat-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
+.btn.hidden {
+  display: none;
 }
 
-.chat-indicator {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #5cb85c;
-}
-
-.chat-channel {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.chat-count {
-  margin-left: auto;
-  font-size: 11px;
-  color: var(--faint);
-}
-
-.chat-messages {
-  padding: 20px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.msg {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.msg-avatar {
-  width: 32px; height: 32px;
-  border-radius: 6px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  flex-shrink: 0;
-  letter-spacing: 0.5px;
-}
-
-.msg-body { flex: 1; }
-
-.msg-meta {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 5px;
-}
-
-.msg-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.msg-role {
-  font-size: 11px;
-  color: var(--faint);
-}
-
-.msg-time {
-  font-size: 11px;
-  color: var(--faint);
-  margin-left: auto;
-}
-
-.msg-text {
-  font-size: 14px;
-  color: var(--text);
-  line-height: 1.6;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0 8px 8px 8px;
-  padding: 10px 14px;
-}
-
-.msg-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.tag {
-  font-size: 10px;
-  font-weight: 500;
-  padding: 2px 8px;
-  border-radius: 3px;
-  letter-spacing: 0.3px;
-}
-
-/* Single accent color for bias tags - just vary shade */
-.tag-a {
-  background: #eee4cf;
-  color: #3f321f;
-  border-color: #cdbb96;
-}
-
-.tag-b {
-  background: #e9ddf1;
-  color: #2f2145;
-  border-color: #bfa7d4;
-}
-
-.tag-c {
-  background: #f1ddd5;
-  color: #472015;
-  border-color: #d7a99a;
-}
-
-.reactions {
-  display: flex;
-  gap: 5px;
-  margin-top: 8px;
-}
-
-.reaction {
-  font-size: 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2px 8px;
-  color: var(--muted);
-}
-
-.chat-system-msg {
-  text-align: center;
-  padding: 6px 0;
-}
-
-.chat-system-msg span {
-  font-size: 11px;
-  color: var(--faint);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 14px;
-}
-
-/* Tag legend */
 .tag-legend {
   display: flex;
   flex-wrap: wrap;
@@ -519,24 +391,210 @@ hr.divider {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
   color: var(--muted);
+  font-size: 12px;
 }
 
-/* ── BIAS CARDS ─────────────────────────────────────────────── */
-.bias-list {
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+}
+
+.tag-a {
+  border: 1px solid #cdbb96;
+  background: #eee4cf;
+  color: #3f321f;
+}
+
+.tag-b {
+  border: 1px solid #bfa7d4;
+  background: #e9ddf1;
+  color: #2f2145;
+}
+
+.tag-c {
+  border: 1px solid #d7a99a;
+  background: #f1ddd5;
+  color: #472015;
+}
+
+.chat-wrap,
+.question-card,
+.persona-card,
+.intervention-box {
+  box-shadow: var(--shadow);
+}
+
+.chat-wrap {
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.chat-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-soft);
+}
+
+.chat-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4a9d50;
+}
+
+.chat-channel {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.chat-count {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 11px;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 18px;
+}
+
+.msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.msg-avatar,
+.persona-avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.msg-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.msg-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.msg-name {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.msg-role,
+.msg-time {
+  color: var(--faint);
+  font-size: 11px;
+}
+
+.msg-time {
+  margin-left: auto;
+}
+
+.msg-text {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 0 8px 8px 8px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.msg-note {
+  margin-top: 6px;
+  color: var(--faint);
+  font-size: 11px;
+}
+
+.msg-tags,
+.persona-tags,
+.reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.reaction {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chat-system-msg {
+  text-align: center;
+}
+
+.chat-system-msg span {
+  display: inline-flex;
+  padding: 4px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface-soft);
+  color: var(--faint);
+  font-size: 11px;
+}
+
+.bias-list,
+.consequence-list {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 10px;
   overflow: hidden;
   margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+.bias-card,
+.consequence-item {
+  background: var(--surface);
 }
 
 .bias-card {
-  background: var(--surface);
   padding: 22px 24px;
 }
 
@@ -544,40 +602,45 @@ hr.divider {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
 .bias-name {
-  font-size: 14px;
-  font-weight: 600;
   color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
 }
 
 .bias-ref {
-  font-size: 10px;
   color: var(--faint);
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 550;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .bias-desc {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.7;
   margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .bias-quote {
-  border-left: 2px solid var(--border);
   padding-left: 14px;
-  font-size: 13px;
+  border-left: 2px solid var(--border-strong);
   color: var(--muted);
+  font-size: 13px;
   line-height: 1.65;
 }
 
-.bias-quote strong { color: var(--text); }
+.bias-quote strong,
+.consequence-item strong,
+.correct-ans-note strong {
+  color: var(--text);
+}
 
-/* ── PERSONA CARDS ──────────────────────────────────────────── */
 .persona-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -586,10 +649,10 @@ hr.divider {
 }
 
 .persona-card {
-  background: var(--surface);
+  padding: 20px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 20px;
+  background: var(--surface);
 }
 
 .persona-head {
@@ -602,98 +665,65 @@ hr.divider {
 }
 
 .persona-avatar {
-  width: 36px; height: 36px;
-  border-radius: 6px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px; font-weight: 700;
-  color: var(--muted);
-  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
 }
 
 .persona-name {
-  font-size: 14px; font-weight: 600;
+  font-size: 14px;
+  font-weight: 650;
 }
 
 .persona-role {
-  font-size: 11px; color: var(--faint);
-}
-
-.persona-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 12px;
+  color: var(--faint);
+  font-size: 11px;
 }
 
 .persona-desc {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.65;
   margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .persona-thought {
-  background: var(--bg);
+  padding: 10px 13px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 10px 13px;
-  font-size: 13px;
+  background: var(--surface-soft);
   color: var(--muted);
+  font-size: 13px;
   font-style: italic;
   line-height: 1.6;
 }
 
-/* ── CONSEQUENCES ───────────────────────────────────────────── */
-.consequence-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-
 .consequence-item {
-  background: var(--surface);
-  padding: 14px 18px;
   display: flex;
   align-items: baseline;
   gap: 12px;
-  font-size: 14px;
+  padding: 14px 18px;
   color: var(--muted);
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.consequence-item strong { color: var(--text); }
-
 .consequence-num {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--faint);
   flex-shrink: 0;
   width: 18px;
+  color: var(--faint);
+  font-size: 11px;
+  font-weight: 650;
 }
 
 .intervention-box {
-  background: var(--surface);
+  margin-top: 8px;
+  padding: 22px 24px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 22px 24px;
-  margin-top: 8px;
+  background: var(--surface);
 }
 
 .intervention-title {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--faint);
   margin-bottom: 14px;
 }
 
@@ -708,85 +738,69 @@ hr.divider {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  font-size: 13.5px;
   color: var(--muted);
+  font-size: 13.5px;
 }
 
 .intervention-step::before {
-  content: '→';
-  color: var(--text);
-  font-weight: 600;
+  content: ">";
   flex-shrink: 0;
+  color: var(--text);
+  font-weight: 650;
 }
 
 .intervention-question {
-  background: var(--mark-bg);
-  border: 1px solid #d4d200;
-  border-radius: 6px;
   padding: 13px 16px;
-  font-size: 14px;
+  border: 1px solid #d9d000;
+  border-left: 4px solid var(--mark);
+  border-radius: 6px;
+  background: var(--mark-bg);
   color: var(--text);
+  font-size: 14px;
   font-style: italic;
   line-height: 1.7;
 }
 
-/* ── QUIZ ───────────────────────────────────────────────────── */
 .quiz-meta {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 6px;
 }
 
 .quiz-meta-label {
-  font-size: 12px;
   color: var(--muted);
+  font-size: 12px;
 }
 
 .quiz-meta-score {
-  font-size: 12px;
-  font-weight: 600;
   color: var(--text);
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .quiz-prog-wrap {
-  background: var(--border);
-  border-radius: 2px;
-  height: 3px;
   margin-bottom: 28px;
-  overflow: hidden;
-}
-
-.quiz-prog-fill {
-  height: 100%;
-  background: var(--text);
-  border-radius: 2px;
-  transition: width 0.5s ease;
 }
 
 .question-card {
-  background: var(--surface);
+  margin-bottom: 16px;
+  padding: 28px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 28px;
-  margin-bottom: 16px;
+  background: var(--surface);
 }
 
 .question-num {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--faint);
   margin-bottom: 10px;
 }
 
 .question-text {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1.65;
   margin-bottom: 22px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 550;
+  line-height: 1.65;
 }
 
 .options {
@@ -802,25 +816,27 @@ hr.divider {
   padding: 12px 16px;
   border: 1.5px solid var(--border);
   border-radius: 7px;
-  background: var(--bg);
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-  font-size: 14px;
+  background: var(--surface-soft);
   color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
   line-height: 1.55;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 
 .option:hover:not(.disabled) {
   border-color: var(--text);
-  color: var(--text);
   background: var(--surface);
+  color: var(--text);
 }
 
-.option.disabled { cursor: not-allowed; }
+.option.disabled {
+  cursor: not-allowed;
+}
 
 .option.correct {
-  border-color: #2e7d32;
-  background: #f1f8f2;
+  border-color: var(--green);
+  background: var(--green-bg);
   color: var(--text);
 }
 
@@ -831,107 +847,121 @@ hr.divider {
 }
 
 .opt-letter {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--faint);
   flex-shrink: 0;
   width: 16px;
   margin-top: 2px;
+  color: var(--faint);
+  font-size: 11px;
+  font-weight: 650;
   text-transform: uppercase;
 }
 
-.option.correct .opt-letter { color: #2e7d32; }
-.option.incorrect .opt-letter { color: var(--red); }
+.option.correct .opt-letter {
+  color: var(--green);
+}
+
+.option.incorrect .opt-letter {
+  color: var(--red);
+}
 
 .feedback-block {
-  border-radius: 7px;
+  display: none;
+  margin-top: 14px;
   padding: 16px 18px;
+  border-radius: 7px;
   font-size: 13.5px;
   line-height: 1.75;
-  margin-top: 14px;
-  display: none;
   animation: enter 0.3s ease;
 }
 
-.feedback-block.show { display: block; }
+.feedback-block.show {
+  display: block;
+}
 
 .feedback-block.correct {
-  background: #f1f8f2;
-  border: 1px solid #a5d6a7;
-  color: var(--text);
+  border: 1px solid #9fcda2;
+  background: var(--green-bg);
 }
 
 .feedback-block.incorrect {
+  border: 1px solid #e9aaa3;
   background: var(--red-bg);
-  border: 1px solid #f5b7b1;
-  color: var(--text);
 }
 
 .feedback-title {
-  font-weight: 600;
   margin-bottom: 6px;
   font-size: 13px;
+  font-weight: 650;
 }
 
-.feedback-block.correct .feedback-title { color: #2e7d32; }
-.feedback-block.incorrect .feedback-title { color: var(--red); }
+.feedback-block.correct .feedback-title {
+  color: var(--green);
+}
+
+.feedback-block.incorrect .feedback-title {
+  color: var(--red);
+}
 
 .correct-ans-note {
-  font-size: 13px;
-  color: var(--muted);
-  background: var(--surface);
+  display: none;
+  margin-top: 10px;
+  padding: 9px 13px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 9px 13px;
-  margin-top: 10px;
-  display: none;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
 }
 
-.correct-ans-note.show { display: block; }
-.correct-ans-note strong { color: var(--text); }
+.correct-ans-note.show {
+  display: block;
+}
 
-/* ── RESULTS ────────────────────────────────────────────────── */
 .results-wrap {
   display: none;
   animation: enter 0.4s ease;
 }
 
-.results-wrap.show { display: block; }
+.results-wrap.show {
+  display: block;
+}
+
+.result-icon {
+  margin-bottom: 12px;
+  font-size: 40px;
+}
 
 .results-score {
-  font-size: 64px;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--text);
   margin-bottom: 4px;
+  color: var(--text);
+  font-size: 64px;
+  font-weight: 650;
+  line-height: 1;
 }
 
 .results-sublabel {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--faint);
   margin-bottom: 20px;
 }
 
 .results-msg {
-  max-width: 500px;
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.75;
+  max-width: 520px;
   margin-bottom: 24px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.75;
 }
 
-/* ── MOBILE ─────────────────────────────────────────────────── */
 @media (max-width: 800px) {
-  h1.panel-title {
-    font-size: 24px;
-    font-weight: 650;
+  .shell {
+    grid-template-columns: 1fr;
   }
 
-  .lead {
-    color: #4f4c45;
+  .sidebar {
+    position: relative;
+    height: auto;
+    padding: 20px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
   }
 
   .stepper {
@@ -940,169 +970,167 @@ hr.divider {
     gap: 8px;
   }
 
-  .step { gap: 0; }
-  .step-node-wrap { display: none; }
-  .step-text-wrap { padding-bottom: 0; }
+  .step {
+    gap: 0;
+  }
+
+  .step-node-wrap,
+  .step-sublabel,
+  .sidebar-footer {
+    display: none;
+  }
+
+  .step-text-wrap {
+    padding-bottom: 0;
+  }
 
   .step-label {
-    background: var(--bg);
-    border: 1px solid var(--border);
+    min-height: 32px;
+    padding: 6px 12px;
+    border: 1px solid var(--border-strong);
     border-radius: 20px;
-    padding: 5px 12px;
-    font-size: 12px;
+    background: var(--surface);
     color: var(--muted);
+    font-size: 12px;
+    box-shadow: var(--shadow-soft);
   }
 
   .step.active .step-label {
+    border-color: var(--text);
     background: var(--text);
     color: #fff;
-    border-color: var(--text);
   }
 
-  .step-sublabel { display: none; }
-  .sidebar-footer { display: none; }
+  .panel {
+    padding: 28px 20px;
+  }
 
-  .panel { padding: 28px 20px; }
-  h1.panel-title { font-size: 22px; }
-  .data-grid { grid-template-columns: 1fr; }
-  .persona-grid { grid-template-columns: 1fr; }
+  .panel-title {
+    font-size: 24px;
+    font-weight: 650;
+  }
+
+  .lead {
+    color: #4f4c45;
+  }
+
+  .data-grid,
+  .persona-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .msg-meta {
+    flex-wrap: wrap;
+  }
+
+  .msg-time {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 480px) {
-  .panel { padding: 20px 16px; }
+  body {
+    font-size: 14px;
+  }
+
+  .panel {
+    padding: 22px 16px;
+  }
+
+  .question-card,
+  .bias-card,
+  .persona-card,
+  .intervention-box {
+    padding: 20px;
+  }
+
+  .chat-bar,
+  .chat-messages {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .tag-legend-item {
+    align-items: flex-start;
+  }
+
+  .option {
+    padding: 12px 13px;
+  }
+
+  .results-score {
+    font-size: 54px;
+  }
 }
 </style>
 </head>
 <body>
-
 <div id="confetti-container"></div>
 
 <div class="shell">
-
-  <!-- ── SIDEBAR ── -->
-  <nav class="sidebar">
+  <nav class="sidebar" aria-label="Navegacion del caso">
     <div class="sidebar-case-label">Caso 5</div>
     <div class="sidebar-title">La Escalada en el Chat Corporativo</div>
 
     <div class="stepper" id="stepper">
       <div class="step active" data-panel="contexto" onclick="showPanel('contexto')">
-        <div class="step-node-wrap">
-          <div class="step-dot"><div class="step-dot-inner"></div></div>
-          <div class="step-line-wrap"></div>
-        </div>
-        <div class="step-text-wrap">
-          <div class="step-label">Contexto</div>
-          <div class="step-sublabel">La empresa y la situación</div>
-        </div>
+        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
+        <div class="step-text-wrap"><div class="step-label">Contexto</div><div class="step-sublabel">La empresa y la situacion</div></div>
       </div>
-
       <div class="step" data-panel="chat" onclick="showPanel('chat')">
-        <div class="step-node-wrap">
-          <div class="step-dot"><div class="step-dot-inner"></div></div>
-          <div class="step-line-wrap"></div>
-        </div>
-        <div class="step-text-wrap">
-          <div class="step-label">El chat</div>
-          <div class="step-sublabel">Simulación del conflicto</div>
-        </div>
+        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
+        <div class="step-text-wrap"><div class="step-label">El chat</div><div class="step-sublabel">Simulacion del conflicto</div></div>
       </div>
-
       <div class="step" data-panel="sesgos" onclick="showPanel('sesgos')">
-        <div class="step-node-wrap">
-          <div class="step-dot"><div class="step-dot-inner"></div></div>
-          <div class="step-line-wrap"></div>
-        </div>
-        <div class="step-text-wrap">
-          <div class="step-label">Los sesgos</div>
-          <div class="step-sublabel">Marco conceptual</div>
-        </div>
+        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
+        <div class="step-text-wrap"><div class="step-label">Los sesgos</div><div class="step-sublabel">Marco conceptual</div></div>
       </div>
-
       <div class="step" data-panel="personas" onclick="showPanel('personas')">
-        <div class="step-node-wrap">
-          <div class="step-dot"><div class="step-dot-inner"></div></div>
-          <div class="step-line-wrap"></div>
-        </div>
-        <div class="step-text-wrap">
-          <div class="step-label">Los interlocutores</div>
-          <div class="step-sublabel">Sofía y Diego</div>
-        </div>
+        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
+        <div class="step-text-wrap"><div class="step-label">Los interlocutores</div><div class="step-sublabel">Sofia y Diego</div></div>
       </div>
-
       <div class="step" data-panel="consecuencias" onclick="showPanel('consecuencias')">
-        <div class="step-node-wrap">
-          <div class="step-dot"><div class="step-dot-inner"></div></div>
-          <div class="step-line-wrap"></div>
-        </div>
-        <div class="step-text-wrap">
-          <div class="step-label">Consecuencias</div>
-          <div class="step-sublabel">Impacto organizacional</div>
-        </div>
+        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
+        <div class="step-text-wrap"><div class="step-label">Consecuencias</div><div class="step-sublabel">Impacto organizacional</div></div>
       </div>
-
       <div class="step" data-panel="quiz" onclick="showPanel('quiz')">
-        <div class="step-node-wrap">
-          <div class="step-dot"><div class="step-dot-inner"></div></div>
-        </div>
-        <div class="step-text-wrap">
-          <div class="step-label">Quiz</div>
-          <div class="step-sublabel">5 preguntas · evaluación</div>
-        </div>
+        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div></div>
+        <div class="step-text-wrap"><div class="step-label">Quiz</div><div class="step-sublabel">5 preguntas</div></div>
       </div>
     </div>
 
     <div class="sidebar-footer">
       <div class="footer-label" id="footer-label">Quiz: 0 de 5 completadas</div>
-      <div class="mini-bar-wrap">
-        <div class="mini-bar-fill" id="mini-bar" style="width: 0%"></div>
-      </div>
+      <div class="mini-bar-wrap"><div class="mini-bar-fill" id="mini-bar" style="width: 0%"></div></div>
     </div>
   </nav>
 
-  <!-- ── MAIN ── -->
   <main class="main">
-
-    <!-- ══ CONTEXTO ══ -->
-    <div class="panel active" id="panel-contexto">
+    <section class="panel active" id="panel-contexto">
       <div class="eyebrow">Contexto organizacional</div>
-      <h1 class="panel-title">La situación</h1>
-      <p class="lead">Una empresa de tecnología trabaja en modalidad híbrida y usa mensajería instantánea para coordinar proyectos. El equipo está bajo presión por el lanzamiento de un nuevo producto digital.</p>
+      <h1 class="panel-title">La situacion</h1>
+      <p class="lead">Una empresa de tecnologia trabaja en modalidad hibrida y usa mensajeria instantanea para coordinar proyectos. El equipo esta bajo presion por el lanzamiento de un nuevo producto digital.</p>
 
       <div class="data-grid">
-        <div class="data-cell">
-          <div class="lbl">Modalidad</div>
-          <div class="val">Trabajo híbrido</div>
-        </div>
-        <div class="data-cell">
-          <div class="lbl">Situación de fondo</div>
-          <div class="val">Lanzamiento de producto digital</div>
-        </div>
-        <div class="data-cell">
-          <div class="lbl">Canal principal</div>
-          <div class="val">Chat corporativo y videollamadas</div>
-        </div>
-        <div class="data-cell">
-          <div class="lbl">Sesgos identificados</div>
-          <div class="val">3 sesgos activos</div>
-        </div>
+        <div class="data-cell"><div class="lbl">Modalidad</div><div class="val">Trabajo hibrido</div></div>
+        <div class="data-cell"><div class="lbl">Situacion de fondo</div><div class="val">Lanzamiento de producto digital</div></div>
+        <div class="data-cell"><div class="lbl">Canal principal</div><div class="val">Chat corporativo y videollamadas</div></div>
+        <div class="data-cell"><div class="lbl">Sesgos identificados</div><div class="val">3 sesgos activos</div></div>
       </div>
 
-      <div class="highlight-box">
-        En entornos digitales, la ausencia de lenguaje no verbal amplifica la tendencia a interpretar mensajes a través de sesgos cognitivos previos. Un intercambio aparentemente breve puede desencadenar un conflicto que afecta a todo el equipo.
-      </div>
+      <div class="highlight-box">En entornos digitales, la ausencia de lenguaje no verbal amplifica la tendencia a interpretar mensajes a traves de sesgos cognitivos previos. Un intercambio aparentemente breve puede desencadenar un conflicto que afecta a todo el equipo.</div>
+      <button class="btn" onclick="showPanel('chat')">Ver el chat ></button>
+    </section>
 
-      <button class="btn" onclick="showPanel('chat')">Ver el chat →</button>
-    </div>
-
-    <!-- ══ CHAT ══ -->
-    <div class="panel" id="panel-chat">
-      <div class="eyebrow">Simulación del conflicto</div>
+    <section class="panel" id="panel-chat">
+      <div class="eyebrow">Simulacion del conflicto</div>
       <h1 class="panel-title">El chat</h1>
-      <p class="lead">La conversación tal como ocurrió. Los marcadores indican qué sesgo se activa en cada momento.</p>
+      <p class="lead">La conversacion tal como ocurrio. Los marcadores indican que sesgo se activa en cada momento.</p>
 
       <div class="tag-legend">
-        <div class="tag-legend-item"><span class="tag tag-a">INFERENCIA ARBITRARIA</span> Conclusión sin evidencia</div>
-        <div class="tag-legend-item"><span class="tag tag-b">SESGO DE CONFIRMACIÓN</span> Confirma creencias previas</div>
+        <div class="tag-legend-item"><span class="tag tag-a">INFERENCIA ARBITRARIA</span> Conclusion sin evidencia</div>
+        <div class="tag-legend-item"><span class="tag tag-b">SESGO DE CONFIRMACION</span> Confirma creencias previas</div>
         <div class="tag-legend-item"><span class="tag tag-c">NEGATIVIDAD INTERPRETATIVA</span> Interpreta lo ambiguo como amenaza</div>
       </div>
 
@@ -1113,366 +1141,267 @@ hr.divider {
           <div class="chat-count">12 participantes</div>
         </div>
         <div class="chat-messages">
-
-          <div class="msg">
+          <article class="msg">
             <div class="msg-avatar">SO</div>
             <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Sofía</span>
-                <span class="msg-role">Coordinadora de Producto</span>
-                <span class="msg-time">14:03</span>
-              </div>
-              <div class="msg-text">Necesitamos mayor compromiso con los tiempos. El cliente ya empezó a notar demoras.</div>
-              <div class="msg-tags">
-                <span class="tag tag-b">SESGO DE CONFIRMACIÓN</span>
-                <span class="tag tag-c">NEGATIVIDAD INTERPRETATIVA</span>
-              </div>
-              <div style="font-size:11px; color: var(--faint); margin-top: 6px;">
-                Mensaje impersonal · no menciona ningún nombre ni área específica
-              </div>
+              <div class="msg-meta"><span class="msg-name">Sofia</span><span class="msg-role">Coordinadora de Producto</span><span class="msg-time">14:03</span></div>
+              <div class="msg-text">Necesitamos mayor compromiso con los tiempos. El cliente ya empezo a notar demoras.</div>
+              <div class="msg-tags"><span class="tag tag-b">SESGO DE CONFIRMACION</span><span class="tag tag-c">NEGATIVIDAD INTERPRETATIVA</span></div>
+              <div class="msg-note">Mensaje impersonal: no menciona ningun nombre ni area especifica.</div>
             </div>
-          </div>
+          </article>
 
-          <div class="reactions" style="padding-left: 44px;">
-            <div class="reaction">👀 4</div>
-            <div class="reaction">😐 2</div>
-            <div class="reaction">🤔 3</div>
-          </div>
-          <div class="chat-system-msg">
-            <span>9 miembros leen · nadie responde</span>
-          </div>
+          <div class="reactions" style="padding-left: 44px;"><div class="reaction">ojos 4</div><div class="reaction">neutro 2</div><div class="reaction">duda 3</div></div>
+          <div class="chat-system-msg"><span>9 miembros leen; nadie responde</span></div>
 
-          <div class="msg">
+          <article class="msg">
             <div class="msg-avatar">DI</div>
             <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Diego</span>
-                <span class="msg-role">Líder de Diseño</span>
-                <span class="msg-time">14:07</span>
-              </div>
-              <div class="msg-text">Estamos haciendo lo posible con la información que recibimos.</div>
-              <div class="msg-tags">
-                <span class="tag tag-a">INFERENCIA ARBITRARIA</span>
-                <span class="tag tag-b">SESGO DE CONFIRMACIÓN</span>
-              </div>
+              <div class="msg-meta"><span class="msg-name">Diego</span><span class="msg-role">Lider de Diseno</span><span class="msg-time">14:07</span></div>
+              <div class="msg-text">Estamos haciendo lo posible con la informacion que recibimos.</div>
+              <div class="msg-tags"><span class="tag tag-a">INFERENCIA ARBITRARIA</span><span class="tag tag-b">SESGO DE CONFIRMACION</span></div>
             </div>
-          </div>
+          </article>
 
-          <div class="msg">
+          <article class="msg">
             <div class="msg-avatar">SO</div>
             <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Sofía</span>
-                <span class="msg-role">Coordinadora de Producto</span>
-                <span class="msg-time">14:09</span>
-              </div>
-              <div class="msg-text">Solo estoy señalando un problema real.</div>
-              <div class="msg-tags">
-                <span class="tag tag-b">SESGO DE CONFIRMACIÓN</span>
-              </div>
+              <div class="msg-meta"><span class="msg-name">Sofia</span><span class="msg-role">Coordinadora de Producto</span><span class="msg-time">14:09</span></div>
+              <div class="msg-text">Solo estoy senalando un problema real.</div>
+              <div class="msg-tags"><span class="tag tag-b">SESGO DE CONFIRMACION</span></div>
             </div>
-          </div>
+          </article>
 
-          <div class="msg">
+          <article class="msg">
             <div class="msg-avatar">DI</div>
             <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Diego</span>
-                <span class="msg-role">Líder de Diseño</span>
-                <span class="msg-time">14:10</span>
-              </div>
+              <div class="msg-meta"><span class="msg-name">Diego</span><span class="msg-role">Lider de Diseno</span><span class="msg-time">14:10</span></div>
               <div class="msg-text">Y yo estoy diciendo que el problema no es solo nuestro.</div>
-              <div class="msg-tags">
-                <span class="tag tag-a">INFERENCIA ARBITRARIA</span>
-              </div>
+              <div class="msg-tags"><span class="tag tag-a">INFERENCIA ARBITRARIA</span></div>
             </div>
-          </div>
+          </article>
 
-          <div class="chat-system-msg">
-            <span>10 miembros dejan de participar · conversaciones privadas paralelas</span>
-          </div>
-
+          <div class="chat-system-msg"><span>10 miembros dejan de participar; conversaciones privadas paralelas</span></div>
         </div>
       </div>
 
-      <button class="btn" onclick="showPanel('sesgos')">Analizar los sesgos →</button>
-    </div>
+      <button class="btn" onclick="showPanel('sesgos')">Analizar los sesgos ></button>
+    </section>
 
-    <!-- ══ SESGOS ══ -->
-    <div class="panel" id="panel-sesgos">
+    <section class="panel" id="panel-sesgos">
       <div class="eyebrow">Marco conceptual</div>
       <h1 class="panel-title">Los tres sesgos</h1>
       <p class="lead">Cada sesgo opera como un filtro que distorsiona la lectura del mensaje. Sin tono de voz ni lenguaje no verbal, estos filtros se activan con mayor facilidad.</p>
 
       <div class="bias-list">
-
-        <div class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Inferencia Arbitraria</div>
-            <div class="bias-ref">Beck, 1979</div>
-          </div>
-          <div class="bias-desc">Llegar a una conclusión sin evidencia que la respalde, o incluso con evidencia contraria. El interlocutor asume una intención sin verificarla.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Diego concluye que Sofía quiso exponerlo públicamente, aunque el mensaje no menciona nombres ni señala equipos específicos.</div>
-        </div>
-
-        <div class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Sesgo de Confirmación</div>
-            <div class="bias-ref">Nickerson, 1998</div>
-          </div>
-          <div class="bias-desc">Tendencia a buscar, interpretar y recordar información que confirma creencias previas, ignorando la que las contradice.</div>
-          <div class="bias-quote"><strong>En Sofía:</strong> interpreta la respuesta breve de Diego como prueba de "poca disposición colaborativa". <br><br><strong>En Diego:</strong> recuerda situaciones anteriores de desconsideración hacia su equipo y las usa para interpretar el mensaje actual.</div>
-        </div>
-
-        <div class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Negatividad Interpretativa</div>
-            <div class="bias-ref">Rozin y Royzman, 2001</div>
-          </div>
-          <div class="bias-desc">Los estímulos negativos tienen mayor impacto psicológico que los equivalentes positivos. En texto escrito, la ambigüedad tiende a interpretarse como amenaza.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Sofía interpreta la falta de respuestas inmediatas como ausencia de compromiso, cuando el silencio del grupo podría tener múltiples explicaciones neutras.</div>
-        </div>
-
+        <article class="bias-card">
+          <div class="bias-header"><div class="bias-name">Inferencia Arbitraria</div><div class="bias-ref">Beck, 1979</div></div>
+          <div class="bias-desc">Llegar a una conclusion sin evidencia que la respalde, o incluso con evidencia contraria. El interlocutor asume una intencion sin verificarla.</div>
+          <div class="bias-quote"><strong>En el caso:</strong> Diego concluye que Sofia quiso exponerlo publicamente, aunque el mensaje no menciona nombres ni senala equipos especificos.</div>
+        </article>
+        <article class="bias-card">
+          <div class="bias-header"><div class="bias-name">Sesgo de Confirmacion</div><div class="bias-ref">Nickerson, 1998</div></div>
+          <div class="bias-desc">Tendencia a buscar, interpretar y recordar informacion que confirma creencias previas, ignorando la que las contradice.</div>
+          <div class="bias-quote"><strong>En Sofia:</strong> interpreta la respuesta breve de Diego como prueba de poca disposicion colaborativa.<br><br><strong>En Diego:</strong> recuerda situaciones anteriores de desconsideracion hacia su equipo y las usa para interpretar el mensaje actual.</div>
+        </article>
+        <article class="bias-card">
+          <div class="bias-header"><div class="bias-name">Negatividad Interpretativa</div><div class="bias-ref">Rozin y Royzman, 2001</div></div>
+          <div class="bias-desc">Los estimulos negativos tienen mayor impacto psicologico que los equivalentes positivos. En texto escrito, la ambiguedad tiende a interpretarse como amenaza.</div>
+          <div class="bias-quote"><strong>En el caso:</strong> Sofia interpreta la falta de respuestas inmediatas como ausencia de compromiso, cuando el silencio del grupo podria tener multiples explicaciones neutras.</div>
+        </article>
       </div>
 
-      <button class="btn" onclick="showPanel('personas')">Ver a los interlocutores →</button>
-    </div>
+      <button class="btn" onclick="showPanel('personas')">Ver a los interlocutores ></button>
+    </section>
 
-    <!-- ══ PERSONAS ══ -->
-    <div class="panel" id="panel-personas">
-      <div class="eyebrow">Análisis de interlocutores</div>
-      <h1 class="panel-title">Sofía y Diego</h1>
-      <p class="lead">Ambos interpretan la misma conversación desde marcos completamente diferentes. Ninguno miente; ambos filtran la realidad a través de sus sesgos activos.</p>
+    <section class="panel" id="panel-personas">
+      <div class="eyebrow">Analisis de interlocutores</div>
+      <h1 class="panel-title">Sofia y Diego</h1>
+      <p class="lead">Ambos interpretan la misma conversacion desde marcos diferentes. Ninguno miente; ambos filtran la realidad a traves de sus sesgos activos.</p>
 
       <div class="persona-grid">
-
-        <div class="persona-card">
-          <div class="persona-head">
-            <div class="persona-avatar">SO</div>
-            <div>
-              <div class="persona-name">Sofía</div>
-              <div class="persona-role">Coordinadora de Producto</div>
-            </div>
-          </div>
-          <div class="persona-tags">
-            <span class="tag tag-b">Sesgo de confirmación</span>
-            <span class="tag tag-c">Negatividad interpretativa</span>
-          </div>
-          <div class="persona-desc">Considera que su mensaje fue objetivo. Subestima cómo la escritura amplifica interpretaciones emocionales. Interpreta el silencio grupal como falta de compromiso.</div>
-          <div class="persona-thought">"Diseño siempre se pone a la defensiva cuando se habla de plazos."</div>
-        </div>
-
-        <div class="persona-card">
-          <div class="persona-head">
-            <div class="persona-avatar">DI</div>
-            <div>
-              <div class="persona-name">Diego</div>
-              <div class="persona-role">Líder de Diseño</div>
-            </div>
-          </div>
-          <div class="persona-tags">
-            <span class="tag tag-a">Inferencia arbitraria</span>
-            <span class="tag tag-b">Sesgo de confirmación</span>
-          </div>
-          <div class="persona-desc">Concluye que Sofía quiso exponerlo públicamente. Usa experiencias previas como evidencia acumulada. La ausencia de tono de voz intensifica su lectura negativa.</div>
-          <div class="persona-thought">"Está tratando de responsabilizarnos delante de todos."</div>
-        </div>
-
+        <article class="persona-card">
+          <div class="persona-head"><div class="persona-avatar">SO</div><div><div class="persona-name">Sofia</div><div class="persona-role">Coordinadora de Producto</div></div></div>
+          <div class="persona-tags"><span class="tag tag-b">Sesgo de confirmacion</span><span class="tag tag-c">Negatividad interpretativa</span></div>
+          <div class="persona-desc">Considera que su mensaje fue objetivo. Subestima como la escritura amplifica interpretaciones emocionales. Interpreta el silencio grupal como falta de compromiso.</div>
+          <div class="persona-thought">"Diseno siempre se pone a la defensiva cuando se habla de plazos."</div>
+        </article>
+        <article class="persona-card">
+          <div class="persona-head"><div class="persona-avatar">DI</div><div><div class="persona-name">Diego</div><div class="persona-role">Lider de Diseno</div></div></div>
+          <div class="persona-tags"><span class="tag tag-a">Inferencia arbitraria</span><span class="tag tag-b">Sesgo de confirmacion</span></div>
+          <div class="persona-desc">Concluye que Sofia quiso exponerlo publicamente. Usa experiencias previas como evidencia acumulada. La ausencia de tono de voz intensifica su lectura negativa.</div>
+          <div class="persona-thought">"Esta tratando de responsabilizarnos delante de todos."</div>
+        </article>
       </div>
 
-      <div class="highlight-box">
-        <strong>Dato ambiguo central:</strong> el mensaje de Sofía no menciona nombres. Diego asume que la crítica está dirigida a su equipo. Esta brecha entre lo dicho y lo interpretado es el núcleo del conflicto.
-      </div>
+      <div class="highlight-box"><strong>Dato ambiguo central:</strong> el mensaje de Sofia no menciona nombres. Diego asume que la critica esta dirigida a su equipo. Esta brecha entre lo dicho y lo interpretado es el nucleo del conflicto.</div>
+      <button class="btn" onclick="showPanel('consecuencias')">Ver las consecuencias ></button>
+    </section>
 
-      <button class="btn" onclick="showPanel('consecuencias')">Ver las consecuencias →</button>
-    </div>
-
-    <!-- ══ CONSECUENCIAS ══ -->
-    <div class="panel" id="panel-consecuencias">
+    <section class="panel" id="panel-consecuencias">
       <div class="eyebrow">Impacto organizacional</div>
       <h1 class="panel-title">Consecuencias</h1>
-      <p class="lead">El conflicto no queda entre Sofía y Diego. Se expande silenciosamente hacia el equipo completo, deteriorando el clima digital y la capacidad de coordinación.</p>
+      <p class="lead">El conflicto no queda entre Sofia y Diego. Se expande silenciosamente hacia el equipo completo, deteriorando el clima digital y la capacidad de coordinacion.</p>
 
       <div class="consequence-list">
-        <div class="consequence-item">
-          <span class="consequence-num">01</span>
-          <span><strong>Retrasos adicionales</strong> por falta de coordinación entre Diseño y Producto.</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">02</span>
-          <span>Disminuye la participación en el chat grupal: colaboradores <strong>evitan preguntar</strong> por temor a críticas públicas.</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">03</span>
-          <span>Aparecen <strong>subgrupos informales</strong>: aumenta la comunicación privada y se pierde transparencia.</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">04</span>
-          <span>Se reduce la <strong>confianza psicológica</strong>: miembros que no participaron perciben tensión entre áreas.</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">05</span>
-          <span>Mayor riesgo de <strong>malinterpretaciones futuras</strong> y pérdida de agilidad colaborativa.</span>
-        </div>
+        <div class="consequence-item"><span class="consequence-num">01</span><span><strong>Retrasos adicionales</strong> por falta de coordinacion entre Diseno y Producto.</span></div>
+        <div class="consequence-item"><span class="consequence-num">02</span><span>Disminuye la participacion en el chat grupal: colaboradores <strong>evitan preguntar</strong> por temor a criticas publicas.</span></div>
+        <div class="consequence-item"><span class="consequence-num">03</span><span>Aparecen <strong>subgrupos informales</strong>: aumenta la comunicacion privada y se pierde transparencia.</span></div>
+        <div class="consequence-item"><span class="consequence-num">04</span><span>Se reduce la <strong>confianza psicologica</strong>: miembros que no participaron perciben tension entre areas.</span></div>
+        <div class="consequence-item"><span class="consequence-num">05</span><span>Mayor riesgo de <strong>malinterpretaciones futuras</strong> y perdida de agilidad colaborativa.</span></div>
       </div>
 
       <div class="intervention-box">
-        <div class="intervention-title">Intervención — Project Manager</div>
+        <div class="intervention-title">Intervencion - Project Manager</div>
         <div class="intervention-steps">
-          <div class="intervention-step">Trasladar la discusión sensible a videollamada</div>
-          <div class="intervention-step">Aclarar intenciones de forma explícita</div>
+          <div class="intervention-step">Trasladar la discusion sensible a videollamada</div>
+          <div class="intervention-step">Aclarar intenciones de forma explicita</div>
           <div class="intervention-step">Separar el problema de las personas</div>
-          <div class="intervention-step">Establecer normas de comunicación digital para el equipo</div>
+          <div class="intervention-step">Establecer normas de comunicacion digital para el equipo</div>
         </div>
-        <div class="intervention-question">
-          "¿Qué parte del conflicto proviene del problema real y qué parte de cómo interpretamos los mensajes escritos?"
-        </div>
+        <div class="intervention-question">"Que parte del conflicto proviene del problema real y que parte de como interpretamos los mensajes escritos?"</div>
       </div>
 
-      <button class="btn" style="margin-top: 24px;" onclick="showPanel('quiz')">Ir al quiz →</button>
-    </div>
+      <button class="btn" style="margin-top: 24px;" onclick="showPanel('quiz')">Ir al quiz ></button>
+    </section>
 
-    <!-- ══ QUIZ ══ -->
-    <div class="panel" id="panel-quiz">
-      <div class="eyebrow">Evaluación formativa</div>
+    <section class="panel" id="panel-quiz">
+      <div class="eyebrow">Evaluacion formativa</div>
       <h1 class="panel-title">Quiz</h1>
-      <p class="lead">5 preguntas situacionales sobre el caso. Cada respuesta incluye retroalimentación pedagógica.</p>
+      <p class="lead">5 preguntas situacionales sobre el caso. Cada respuesta incluye retroalimentacion pedagogica.</p>
 
       <div class="quiz-meta">
         <span class="quiz-meta-label" id="q-label">Pregunta 1 de 5</span>
         <span class="quiz-meta-score" id="q-score">0 puntos</span>
       </div>
-      <div class="quiz-prog-wrap">
-        <div class="quiz-prog-fill" id="q-prog" style="width: 20%"></div>
-      </div>
+      <div class="quiz-prog-wrap"><div class="quiz-prog-fill" id="q-prog" style="width: 0%"></div></div>
 
       <div id="quiz-body"></div>
-
       <div class="results-wrap" id="results-wrap">
-        <div class="result-icon" id="r-icon" style="font-size:40px; margin-bottom:12px;"></div>
+        <div class="result-icon" id="r-icon"></div>
         <div class="results-score" id="r-score"></div>
         <div class="results-sublabel">puntos obtenidos</div>
         <p class="results-msg" id="r-msg"></p>
-        <button class="btn" onclick="resetQuiz()">🔄 Volver a intentar</button>
+        <button class="btn" onclick="resetQuiz()">Volver a intentar</button>
       </div>
-
-      <button class="btn ghost hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
-    </div>
-
+      <button class="btn ghost hidden" id="next-btn" onclick="nextQuestion()">Siguiente ></button>
+    </section>
   </main>
 </div>
 
 <script>
 const questions = [
   {
-    text: "Sofía envía el mensaje: 'Necesitamos mayor compromiso con los tiempos.' El mensaje no menciona ningún nombre ni área específica. Diego, sin embargo, responde defensivamente. ¿Cuál es el sesgo que explica principalmente la reacción de Diego?",
+    text: "Sofia envia el mensaje: 'Necesitamos mayor compromiso con los tiempos.' El mensaje no menciona ningun nombre ni area especifica. Diego, sin embargo, responde defensivamente. Cual es el sesgo que explica principalmente la reaccion de Diego?",
     options: [
       "Sesgo de negatividad interpretativa, porque Diego exagera el impacto emocional del mensaje.",
-      "Inferencia arbitraria, porque Diego concluye que el mensaje lo señala a él sin evidencia directa.",
-      "Sesgo de confirmación, porque Diego recuerda únicamente situaciones positivas previas.",
-      "Efecto halo, porque Diego juzga a Sofía por su trayectoria profesional."
+      "Inferencia arbitraria, porque Diego concluye que el mensaje lo senala a el sin evidencia directa.",
+      "Sesgo de confirmacion, porque Diego recuerda unicamente situaciones positivas previas.",
+      "Efecto halo, porque Diego juzga a Sofia por su trayectoria profesional."
     ],
     correct: 1,
-    feedbackCorrect: "Diego realiza una inferencia arbitraria: llega a la conclusión de que el mensaje lo responsabiliza públicamente, aunque el texto no menciona nombres ni señala equipos. Este sesgo es especialmente frecuente en comunicación escrita, donde la ausencia de tono de voz deja un espacio ambiguo que el receptor llena con sus propias suposiciones.",
-    feedbackIncorrect: "La respuesta correcta es la inferencia arbitraria. Diego concluye una intención específica —ser expuesto públicamente— sin ninguna evidencia textual que lo justifique. El mensaje de Sofía es impersonal y no menciona a Diseño. La inferencia surge del receptor, no del texto."
+    feedbackCorrect: "Diego realiza una inferencia arbitraria: llega a la conclusion de que el mensaje lo responsabiliza publicamente, aunque el texto no menciona nombres ni senala equipos. Este sesgo es especialmente frecuente en comunicacion escrita, donde la ausencia de tono de voz deja un espacio ambiguo que el receptor llena con sus propias suposiciones.",
+    feedbackIncorrect: "La respuesta correcta es la inferencia arbitraria. Diego concluye una intencion especifica, ser expuesto publicamente, sin ninguna evidencia textual que lo justifique. El mensaje de Sofia es impersonal y no menciona a Diseno. La inferencia surge del receptor, no del texto."
   },
   {
-    text: "Sofía piensa: 'Diseño siempre se pone a la defensiva cuando se habla de plazos.' Esta afirmación refleja que Sofía usa la respuesta de Diego como confirmación de algo que ya creía. ¿Qué sesgo describe mejor este proceso?",
+    text: "Sofia piensa: 'Diseno siempre se pone a la defensiva cuando se habla de plazos.' Esta afirmacion refleja que Sofia usa la respuesta de Diego como confirmacion de algo que ya creia. Que sesgo describe mejor este proceso?",
     options: [
-      "Inferencia arbitraria, porque Sofía asume intenciones que Diego no expresó.",
-      "Negatividad interpretativa, porque Sofía interpreta el silencio del grupo como falta de compromiso.",
-      "Sesgo de confirmación, porque Sofía usa la respuesta de Diego como evidencia de una creencia preexistente.",
-      "Sesgo de anclaje, porque Sofía se fija en el primer dato para juzgar la situación."
+      "Inferencia arbitraria, porque Sofia asume intenciones que Diego no expreso.",
+      "Negatividad interpretativa, porque Sofia interpreta el silencio del grupo como falta de compromiso.",
+      "Sesgo de confirmacion, porque Sofia usa la respuesta de Diego como evidencia de una creencia preexistente.",
+      "Sesgo de anclaje, porque Sofia se fija en el primer dato para juzgar la situacion."
     ],
     correct: 2,
-    feedbackCorrect: "El sesgo de confirmación opera cuando una persona filtra la nueva información buscando que confirme lo que ya cree. Sofía no evalúa la respuesta de Diego de manera neutral: la interpreta inmediatamente como prueba de una tendencia que —según ella— Diseño siempre tiene. Esto cierra el diálogo antes de que pueda comenzar.",
-    feedbackIncorrect: "El sesgo que describe este proceso es el de confirmación. Sofía no llega a una conclusión nueva: refuerza una creencia anterior usando la respuesta de Diego como evidencia. Esto es diferente de la inferencia arbitraria, donde el problema es inventar una intención; aquí el problema es seleccionar solo lo que confirma lo ya conocido."
+    feedbackCorrect: "El sesgo de confirmacion opera cuando una persona filtra la nueva informacion buscando que confirme lo que ya cree. Sofia no evalua la respuesta de Diego de manera neutral: la interpreta inmediatamente como prueba de una tendencia que, segun ella, Diseno siempre tiene.",
+    feedbackIncorrect: "El sesgo que describe este proceso es el de confirmacion. Sofia no llega a una conclusion nueva: refuerza una creencia anterior usando la respuesta de Diego como evidencia. Esto es diferente de la inferencia arbitraria, donde el problema es inventar una intencion."
   },
   {
-    text: "Varios colaboradores observan el chat, no intervienen y luego inician conversaciones privadas paralelas. ¿Cuál es la consecuencia organizacional más significativa de este comportamiento colectivo?",
+    text: "Varios colaboradores observan el chat, no intervienen y luego inician conversaciones privadas paralelas. Cual es la consecuencia organizacional mas significativa de este comportamiento colectivo?",
     options: [
       "Mejora la eficiencia del equipo porque los asuntos sensibles se resuelven en privado.",
-      "Reduce la confianza psicológica y la transparencia, porque la información relevante circula por canales informales.",
-      "Fortalece los vínculos entre subgrupos y mejora la cohesión informal.",
-      "Disminuye el riesgo de conflicto porque los miembros evitan escalar la situación."
+      "Reduce la confianza psicologica y la transparencia, porque la informacion relevante circula por canales informales.",
+      "Fortalece los vinculos entre subgrupos y mejora la cohesion informal.",
+      "Disminuye el riesgo de conflicto porque los miembros evitan escalar la situacion."
     ],
     correct: 1,
-    feedbackCorrect: "Cuando el equipo migra a conversaciones privadas, la información estratégica deja de circular de manera transparente. Esto genera subgrupos con interpretaciones diferentes, reduce la confianza psicológica colectiva y aumenta el riesgo de malentendidos futuros. El silencio en el canal grupal no resuelve el conflicto: lo fragmenta.",
-    feedbackIncorrect: "La consecuencia más significativa es la reducción de transparencia y confianza. Las conversaciones privadas no resuelven el conflicto: lo fragmentan. Cada subgrupo construye su propia versión de los hechos, lo que deteriora la coordinación y aumenta las malinterpretaciones en el futuro."
+    feedbackCorrect: "Cuando el equipo migra a conversaciones privadas, la informacion estrategica deja de circular de manera transparente. Esto genera subgrupos con interpretaciones diferentes, reduce la confianza psicologica colectiva y aumenta el riesgo de malentendidos futuros.",
+    feedbackIncorrect: "La consecuencia mas significativa es la reduccion de transparencia y confianza. Las conversaciones privadas no resuelven el conflicto: lo fragmentan. Cada subgrupo construye su propia version de los hechos."
   },
   {
-    text: "La Project Manager decide trasladar la discusión a videollamada. ¿Por qué esta acción es pertinente desde la perspectiva de los sesgos cognitivos en entornos digitales?",
+    text: "La Project Manager decide trasladar la discusion a videollamada. Por que esta accion es pertinente desde la perspectiva de los sesgos cognitivos en entornos digitales?",
     options: [
-      "Porque la videollamada permite registrar la conversación para usarla como evidencia disciplinaria.",
+      "Porque la videollamada permite registrar la conversacion para usarla como evidencia disciplinaria.",
       "Porque la videollamada elimina todos los sesgos cognitivos de los participantes.",
-      "Porque recupera el lenguaje no verbal y el tono de voz, reduciendo el espacio ambiguo que activa los sesgos en la comunicación escrita.",
-      "Porque establece una jerarquía clara que obliga a los participantes a ser más formales."
+      "Porque recupera el lenguaje no verbal y el tono de voz, reduciendo el espacio ambiguo que activa los sesgos en la comunicacion escrita.",
+      "Porque establece una jerarquia clara que obliga a los participantes a ser mas formales."
     ],
     correct: 2,
-    feedbackCorrect: "El canal escrito elimina señales clave —tono, expresión facial, ritmo— que usamos para calibrar intenciones. Al trasladar la conversación a videollamada se restituyen esas señales, reduciendo el espacio ambiguo donde los sesgos como la inferencia arbitraria o la negatividad interpretativa tienden a activarse con mayor intensidad.",
-    feedbackIncorrect: "La razón central es que la videollamada restituye el lenguaje no verbal y el tono de voz. Los sesgos cognitivos no desaparecen con el canal, pero el chat escrito los amplifica porque elimina las señales que usamos para calibrar intenciones. Recuperar esas señales reduce significativamente el espacio de interpretación errónea."
+    feedbackCorrect: "El canal escrito elimina senales clave, como tono, expresion facial y ritmo, que usamos para calibrar intenciones. Al trasladar la conversacion a videollamada se restituyen esas senales y se reduce el espacio ambiguo donde los sesgos tienden a activarse.",
+    feedbackIncorrect: "La razon central es que la videollamada restituye el lenguaje no verbal y el tono de voz. Los sesgos cognitivos no desaparecen con el canal, pero el chat escrito los amplifica porque elimina senales importantes para calibrar intenciones."
   },
   {
-    text: "La Project Manager pregunta: '¿Qué parte del conflicto proviene del problema real y qué parte de cómo interpretamos los mensajes escritos?' ¿Qué principio del análisis de conflictos aplica esta pregunta?",
+    text: "La Project Manager pregunta: 'Que parte del conflicto proviene del problema real y que parte de como interpretamos los mensajes escritos?' Que principio del analisis de conflictos aplica esta pregunta?",
     options: [
-      "Separar el contenido del mensaje de los procesos cognitivos que determinan cómo es interpretado.",
-      "Demostrar que Diego tiene más responsabilidad en el conflicto que Sofía.",
-      "Identificar quién tuvo razón para determinar la causa técnica del retraso.",
+      "Separar el contenido del mensaje de los procesos cognitivos que determinan como es interpretado.",
+      "Demostrar que Diego tiene mas responsabilidad en el conflicto que Sofia.",
+      "Identificar quien tuvo razon para determinar la causa tecnica del retraso.",
       "Evaluar si el canal digital es siempre inadecuado para resolver conflictos laborales."
     ],
     correct: 0,
-    feedbackCorrect: "La pregunta aplica el principio de separar el problema sustantivo —los retrasos reales— del problema relacional —cómo cada persona interpretó el mensaje. Esta distinción es central en la gestión de conflictos: muchas disputas laborales se sostienen más en los sesgos de interpretación que en los desacuerdos sobre los hechos mismos.",
-    feedbackIncorrect: "La respuesta correcta apunta a separar el contenido del mensaje de los procesos cognitivos que determinan su interpretación. La pregunta no busca asignar culpa ni evaluar el canal: busca que el equipo distinga entre 'lo que realmente pasó' y 'lo que cada uno creyó que significaba'. Esa distinción es la clave del análisis."
+    feedbackCorrect: "La pregunta aplica el principio de separar el problema sustantivo, los retrasos reales, del problema relacional, es decir, como cada persona interpreto el mensaje. Esta distincion es central en la gestion de conflictos.",
+    feedbackIncorrect: "La respuesta correcta apunta a separar el contenido del mensaje de los procesos cognitivos que determinan su interpretacion. La pregunta no busca asignar culpa ni evaluar el canal: busca distinguir entre lo que paso y lo que cada persona creyo que significaba."
   }
 ];
 
-let currentQ = 0, score = 0, answered = false;
-let userScores = new Array(5).fill(0);
+let currentQ = 0;
+let score = 0;
+let answered = false;
 
 function showPanel(id) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  document.querySelectorAll('.step').forEach(s => {
-    s.classList.remove('active');
-    if (s.dataset.panel === id) s.classList.add('active');
+  document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+  document.getElementById("panel-" + id).classList.add("active");
+
+  document.querySelectorAll(".step").forEach(step => {
+    step.classList.remove("active");
+    if (step.dataset.panel === id) step.classList.add("active");
   });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  document.querySelector('.main').scrollTo({ top: 0, behavior: 'smooth' });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  document.querySelector(".main").scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function launchConfetti() {
-  const c = document.getElementById('confetti-container');
-  const colors = ['#1a1917','#e8e300','#5b8dd9','#2e7d32','#c0392b'];
-  for (let i = 0; i < 50; i++) {
-    const el = document.createElement('div');
-    el.classList.add('confetti-piece');
-    el.style.cssText = `
-      left: ${Math.random()*100}%;
-      background: ${colors[Math.floor(Math.random()*colors.length)]};
-      animation-delay: ${Math.random()*0.4}s;
-      animation-duration: ${Math.random()*2+2}s;
-      border-radius: ${Math.random()>0.5?'50%':'2px'};
-    `;
-    c.appendChild(el);
-    setTimeout(() => el.remove(), 3500);
+  const container = document.getElementById("confetti-container");
+  const colors = ["#1a1917", "#e8e300", "#5b8dd9", "#2e7d32", "#c0392b"];
+
+  for (let i = 0; i < 48; i++) {
+    const el = document.createElement("div");
+    el.className = "confetti-piece";
+    el.style.left = Math.random() * 100 + "%";
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDelay = Math.random() * 0.4 + "s";
+    el.style.animationDuration = Math.random() * 2 + 2 + "s";
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 3600);
   }
 }
 
 function updateBar() {
   const pct = (currentQ / questions.length) * 100;
-  document.getElementById('q-prog').style.width = pct + '%';
-  document.getElementById('q-label').textContent = `Pregunta ${currentQ + 1} de ${questions.length}`;
-  document.getElementById('q-score').textContent = `${score} punto${score !== 1 ? 's' : ''}`;
-  document.getElementById('footer-label').textContent = `Quiz: ${currentQ} de ${questions.length} completadas`;
-  document.getElementById('mini-bar').style.width = pct + '%';
+  document.getElementById("q-prog").style.width = pct + "%";
+  document.getElementById("q-label").textContent = "Pregunta " + (currentQ + 1) + " de " + questions.length;
+  document.getElementById("q-score").textContent = score + " punto" + (score !== 1 ? "s" : "");
+  document.getElementById("footer-label").textContent = "Quiz: " + currentQ + " de " + questions.length + " completadas";
+  document.getElementById("mini-bar").style.width = pct + "%";
 }
 
 function renderQuestion() {
   answered = false;
   const q = questions[currentQ];
-  const letters = ['A','B','C','D'];
+  const letters = ["A", "B", "C", "D"];
 
-  let html = `
+  document.getElementById("quiz-body").innerHTML = `
     <div class="question-card">
       <div class="question-num">Pregunta ${currentQ + 1} de ${questions.length}</div>
       <div class="question-text">${q.text}</div>
@@ -1482,17 +1411,16 @@ function renderQuestion() {
             <span class="opt-letter">${letters[i]}</span>
             <span>${opt}</span>
           </div>
-        `).join('')}
+        `).join("")}
       </div>
       <div class="feedback-block" id="fb"></div>
       <div class="correct-ans-note" id="ca-note"></div>
     </div>
   `;
 
-  document.getElementById('quiz-body').innerHTML = html;
-  document.getElementById('results-wrap').classList.remove('show');
-  document.getElementById('quiz-body').style.display = 'block';
-  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById("results-wrap").classList.remove("show");
+  document.getElementById("quiz-body").style.display = "block";
+  document.getElementById("next-btn").classList.add("hidden");
   updateBar();
 }
 
@@ -1503,71 +1431,80 @@ function selectOption(idx) {
   const q = questions[currentQ];
   const ok = idx === q.correct;
 
-  document.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
-  document.getElementById(`opt-${idx}`).classList.add(ok ? 'correct' : 'incorrect');
-  if (!ok) document.getElementById(`opt-${q.correct}`).classList.add('correct');
+  document.querySelectorAll(".option").forEach(option => option.classList.add("disabled"));
+  document.getElementById("opt-" + idx).classList.add(ok ? "correct" : "incorrect");
+  if (!ok) document.getElementById("opt-" + q.correct).classList.add("correct");
 
-  if (ok) { score += 10; userScores[currentQ] = 10; launchConfetti(); }
-  document.getElementById('q-score').textContent = `${score} punto${score !== 1 ? 's' : ''}`;
-
-  const fb = document.getElementById('fb');
-  fb.className = 'feedback-block show ' + (ok ? 'correct' : 'incorrect');
-  fb.innerHTML = `<div class="feedback-title">${ok ? '✓ Correcto' : '✗ Incorrecto'}</div><p>${ok ? q.feedbackCorrect : q.feedbackIncorrect}</p>`;
-
-  if (!ok) {
-    const ca = document.getElementById('ca-note');
-    ca.classList.add('show');
-    ca.innerHTML = `<strong>Respuesta correcta:</strong> ${q.options[q.correct]}`;
+  if (ok) {
+    score += 10;
+    launchConfetti();
   }
 
-  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById("q-score").textContent = score + " punto" + (score !== 1 ? "s" : "");
+
+  const fb = document.getElementById("fb");
+  fb.className = "feedback-block show " + (ok ? "correct" : "incorrect");
+  fb.innerHTML = `<div class="feedback-title">${ok ? "Correcto" : "Incorrecto"}</div><p>${ok ? q.feedbackCorrect : q.feedbackIncorrect}</p>`;
+
+  if (!ok) {
+    const note = document.getElementById("ca-note");
+    note.classList.add("show");
+    note.innerHTML = `<strong>Respuesta correcta:</strong> ${q.options[q.correct]}`;
+  }
+
+  document.getElementById("next-btn").classList.remove("hidden");
 }
 
 function nextQuestion() {
   currentQ++;
-  if (currentQ >= questions.length) showResults();
-  else renderQuestion();
+  if (currentQ >= questions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
 }
 
 function showResults() {
-  document.getElementById('quiz-body').style.display = 'none';
-  document.getElementById('next-btn').classList.add('hidden');
-  document.getElementById('q-prog').style.width = '100%';
-  document.getElementById('q-label').textContent = 'Completado';
-  document.getElementById('footer-label').textContent = `Quiz completado · ${score}/50 pts`;
-  document.getElementById('mini-bar').style.width = '100%';
+  document.getElementById("quiz-body").style.display = "none";
+  document.getElementById("next-btn").classList.add("hidden");
+  document.getElementById("q-prog").style.width = "100%";
+  document.getElementById("q-label").textContent = "Completado";
+  document.getElementById("footer-label").textContent = "Quiz completado: " + score + "/50 pts";
+  document.getElementById("mini-bar").style.width = "100%";
 
   const pct = score / (questions.length * 10) * 100;
-  let icon, msg;
+  let icon = "Bien";
+  let msg = "";
 
   if (pct >= 100) {
-    icon = '🏆';
-    msg = 'Dominio excepcional del caso. Identificaste correctamente cómo opera cada sesgo y sus consecuencias organizacionales. Distingues con precisión el problema sustantivo del relacional.';
+    icon = "Excelente";
+    msg = "Dominio excepcional del caso. Identificaste correctamente como opera cada sesgo y sus consecuencias organizacionales.";
     launchConfetti();
   } else if (pct >= 80) {
-    icon = '🎯';
-    msg = 'Muy buen desempeño. Tienes una comprensión sólida. Revisa el feedback de las preguntas incorrectas, especialmente la distinción entre inferencia arbitraria y sesgo de confirmación.';
+    icon = "Muy bien";
+    msg = "Tienes una comprension solida. Revisa el feedback de las preguntas incorrectas, especialmente la distincion entre inferencia arbitraria y sesgo de confirmacion.";
   } else if (pct >= 60) {
-    icon = '📚';
-    msg = 'Comprensión adecuada. Te recomendamos revisar los paneles "Los sesgos" y "Los interlocutores" para profundizar en cómo opera cada sesgo en cada persona del caso.';
+    icon = "Buen avance";
+    msg = "Comprension adecuada. Revisa los paneles de sesgos e interlocutores para profundizar en como opera cada sesgo en cada persona del caso.";
   } else {
-    icon = '💪';
-    msg = 'Momento de reforzar. Vuelve al caso completo con atención especial a los marcadores de sesgo en el chat y a la descripción de cada interlocutor. ¡Vale la pena el esfuerzo!';
+    icon = "A reforzar";
+    msg = "Conviene volver al caso completo con atencion especial a los marcadores de sesgo en el chat y a la descripcion de cada interlocutor.";
   }
 
-  document.getElementById('r-icon').textContent = icon;
-  document.getElementById('r-score').textContent = `${score}/50`;
-  document.getElementById('r-msg').textContent = msg;
-  document.getElementById('results-wrap').classList.add('show');
+  document.getElementById("r-icon").textContent = icon;
+  document.getElementById("r-score").textContent = score + "/50";
+  document.getElementById("r-msg").textContent = msg;
+  document.getElementById("results-wrap").classList.add("show");
 }
 
 function resetQuiz() {
-  currentQ = 0; score = 0; answered = false;
-  userScores = new Array(5).fill(0);
-  document.getElementById('results-wrap').classList.remove('show');
-  document.getElementById('quiz-body').style.display = 'block';
+  currentQ = 0;
+  score = 0;
+  answered = false;
+  document.getElementById("results-wrap").classList.remove("show");
+  document.getElementById("quiz-body").style.display = "block";
   renderQuestion();
-  document.querySelector('.main').scrollTo({ top: 0, behavior: 'smooth' });
+  document.querySelector(".main").scrollTo({ top: 0, behavior: "smooth" });
 }
 
 renderQuestion();
