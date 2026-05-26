@@ -1,844 +1,672 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caso 6 - Lo que no dijiste pero todos escucharon</title>
-<meta property="og:title" content="Caso 6 - Sesgos en la comunicación interpersonal">
-<meta property="og:description" content="Herramienta interactiva: sesgos cognitivos en la reunión de seguimiento de Sofía y Diego">
-<meta property="og:type" content="sitio-web">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;650&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:#f1f0ec; --surface:#ffffff; --surface-soft:#faf9f6;
-  --border:#d6d2ca; --border-strong:#c8c2b7;
-  --text:#1a1917; --muted:#56524a; --faint:#827d73;
-  --mark:#e8e300; --mark-bg:#fff9b8;
-  --red:#b83225; --red-bg:#fff0ee;
-  --green:#2e7d32; --green-bg:#eef8f0;
-  --shadow:0 2px 12px rgba(26,25,23,.07);
-  --shadow-soft:0 1px 8px rgba(26,25,23,.05);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:"Inter",system-ui,sans-serif;font-size:15px;line-height:1.65;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-button,input{font:inherit}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Comité de Crisis | NovaGen - Simulador Estratégico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-#confetti-container{position:fixed;inset:0;z-index:9999;pointer-events:none}
-.confetti-piece{position:absolute;top:-10px;width:7px;height:7px;opacity:.85;animation:confetti-fall linear forwards}
-@keyframes confetti-fall{to{transform:translateY(105vh) rotate(540deg);opacity:0}}
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0e17, #04070c);
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 24px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
-.sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:32px 24px}
-.sidebar-case-label,.eyebrow,.question-num,.results-sublabel,.data-cell .lbl,.bias-ref,.reflexion-label,.intervention-title{font-size:10px;font-weight:650;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint)}
-.sidebar-case-label{margin-bottom:6px}
-.sidebar-title{font-size:14px;font-weight:650;line-height:1.4;margin-bottom:28px}
-.stepper{display:flex;flex:1;flex-direction:column}
-.step{position:relative;display:flex;align-items:flex-start;gap:14px;cursor:pointer}
-.step:not(:last-child) .step-line-wrap{position:absolute;left:10px;top:22px;bottom:-2px;width:1px;background:var(--border)}
-.step-node-wrap{z-index:1;display:flex;flex-shrink:0;flex-direction:column;align-items:center;padding-bottom:24px}
-.step-dot{display:flex;width:21px;height:21px;align-items:center;justify-content:center;border:1.5px solid var(--border-strong);border-radius:50%;background:var(--bg);transition:all .25s ease}
-.step-dot-inner{width:7px;height:7px;border-radius:50%;background:var(--border-strong);transition:background .25s ease}
-.step-text-wrap{padding-bottom:24px}
-.step-label{padding-top:2px;color:var(--muted);font-size:13px;font-weight:500;line-height:1.3;transition:color .2s}
-.step-sublabel{margin-top:1px;color:var(--faint);font-size:11px}
-.step.active .step-dot{border-color:var(--text);background:var(--text)}
-.step.active .step-dot-inner{background:#fff}
-.step.done .step-dot{border-color:var(--faint)}
-.step.done .step-dot-inner{background:var(--faint)}
-.step.active .step-label{color:var(--text);font-weight:650}
-.step.done .step-label{color:var(--faint)}
-.sidebar-footer{margin-top:auto;padding-top:20px;border-top:1px solid var(--border)}
-.footer-label{margin-bottom:8px;color:var(--faint);font-size:11px}
-.mini-bar-wrap,.quiz-prog-wrap{overflow:hidden;height:3px;border-radius:3px;background:var(--border)}
-.mini-bar-fill,.quiz-prog-fill{height:100%;border-radius:3px;background:var(--text);transition:width .5s ease}
+        .crisis-app {
+            max-width: 1280px;
+            width: 100%;
+            background: rgba(10, 14, 22, 0.9);
+            backdrop-filter: blur(4px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 40px -12px black, 0 0 0 1px rgba(59, 130, 246, 0.25);
+            overflow: hidden;
+        }
 
-.main{overflow-y:auto;background:var(--bg)}
-.panel{display:none;max-width:760px;padding:48px 52px;animation:enter .35s ease}
-.panel.active{display:block}
-@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .screen {
+            transition: opacity 0.3s ease;
+            padding: 1.8rem;
+        }
 
-.eyebrow{margin-bottom:10px}
-.panel-title{margin-bottom:14px;color:var(--text);font-size:28px;font-weight:650;line-height:1.25}
-.lead{max-width:580px;margin-bottom:32px;color:var(--muted);font-size:15px;line-height:1.75}
+        .screen-hidden {
+            display: none;
+        }
 
-.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;margin-bottom:28px;border:1px solid var(--border);border-radius:10px;background:var(--border);box-shadow:var(--shadow-soft)}
-.data-cell{background:var(--surface);padding:16px 18px}
-.data-cell .lbl{margin-bottom:4px}
-.data-cell .val{color:var(--text);font-size:14px;font-weight:550}
+        .chat-container {
+            background: #0c0f17;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid #20263b;
+        }
 
-.highlight-box{margin-bottom:20px;padding:16px 20px;border:1px solid #d9d000;border-left:4px solid var(--mark);border-radius:8px;background:var(--mark-bg);color:var(--text);font-size:14px;line-height:1.7;box-shadow:var(--shadow-soft)}
+        .chat-header {
+            background: #080b12;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #1e253a;
+        }
 
-.btn{display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:10px 22px;border:1.5px solid var(--text);border-radius:6px;background:var(--text);color:#fff;cursor:pointer;font-size:13px;font-weight:550;transition:opacity .15s ease,transform .15s ease}
-.btn:hover:not(:disabled){opacity:.88;transform:translateY(-1px)}
-.btn:disabled{cursor:not-allowed;opacity:.4}
-.btn.ghost{background:transparent;color:var(--text)}
-.btn.ghost:hover{background:var(--border)}
-.btn.hidden{display:none}
+        .chat-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff, #9bb6ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.25;
+        }
 
-/* ── Tags de sesgo ── */
-.tag-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-.tag-legend-item{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;line-height:1.4}
-.tag{display:inline-flex;align-items:center;min-height:20px;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:650;letter-spacing:.2px;white-space:nowrap}
-/* Paleta diferenciada por sesgo */
-.tag-pi {border:1px solid #d7a99a;background:#f1ddd5;color:#472015}   /* Primera impresión */
-.tag-as {border:1px solid #cdbb96;background:#eee4cf;color:#3f321f}   /* Atención selectiva */
-.tag-sc {border:1px solid #bfa7d4;background:#e9ddf1;color:#2f2145}   /* Sesgo de confirmación */
-.tag-ep {border:1px solid #a8c8a0;background:#dff0db;color:#1a3d17}   /* Efecto Pigmalión */
-.tag-sd {border:1px solid #a0b8d4;background:#d8eaf6;color:#0f2d47}   /* Sesgo de disponibilidad */
-.tag-td {border:1px solid #c8c8a0;background:#f0f0d0;color:#3a3a10}   /* Pensamiento dicotómico */
-.tag-ge {border:1px solid #c0a8b8;background:#f0dce8;color:#3a1030}   /* Generalización excesiva */
-.tag-sh {border:1px solid #b8a0c8;background:#ecddf5;color:#2f1545}   /* Sesgo de halo */
-.tag-pc {border:1px solid #d4b8a0;background:#f5e8d8;color:#472010}   /* Pensamiento catastrófico */
+        .encrypted-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: #8f9bb5;
+            background: #11161f;
+            padding: 6px 14px;
+            border-radius: 40px;
+            width: fit-content;
+            flex-wrap: wrap;
+        }
 
-/* ── Chat ── */
-.chat-wrap{overflow:hidden;margin-bottom:24px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:var(--shadow)}
-.chat-bar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface-soft)}
-.chat-indicator{width:7px;height:7px;border-radius:50%;background:#4a9d50}
-.chat-channel{color:var(--muted);font-size:12px;font-weight:550}
-.chat-count{margin-left:auto;color:var(--faint);font-size:11px}
-.chat-messages{display:flex;flex-direction:column;gap:18px;padding:20px 18px}
-.msg{display:flex;align-items:flex-start;gap:12px}
-.msg-avatar{display:flex;flex-shrink:0;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--surface-soft);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.5px}
-.msg-body{flex:1;min-width:0}
-.msg-meta{display:flex;align-items:baseline;gap:8px;margin-bottom:5px;flex-wrap:wrap}
-.msg-name{color:var(--text);font-size:13px;font-weight:650}
-.msg-role{color:var(--faint);font-size:11px}
-.msg-time{margin-left:auto;color:var(--faint);font-size:11px}
-.msg-text{padding:10px 14px;border:1px solid var(--border);border-radius:0 8px 8px 8px;background:var(--surface-soft);color:var(--text);font-size:14px;line-height:1.6}
-.msg-note{margin-top:6px;color:var(--faint);font-size:11px;font-style:italic}
-.msg-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chat-system-msg{text-align:center}
-.chat-system-msg span{display:inline-flex;padding:4px 14px;border:1px solid var(--border);border-radius:20px;background:var(--surface-soft);color:var(--faint);font-size:11px}
+        .chat-messages {
+            padding: 1.5rem;
+            max-height: 55vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.3rem;
+        }
 
-/* ── Bias cards ── */
-.bias-list{display:flex;flex-direction:column;gap:1px;overflow:hidden;margin-bottom:24px;border:1px solid var(--border);border-radius:10px;background:var(--border);box-shadow:var(--shadow-soft)}
-.bias-card{background:var(--surface);padding:22px 24px}
-.bias-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
-.bias-name{color:var(--text);font-size:14px;font-weight:650}
-.bias-ref{color:var(--faint);font-size:10px;font-weight:550;letter-spacing:.5px;white-space:nowrap}
-.bias-desc{margin-bottom:12px;color:var(--muted);font-size:14px;line-height:1.7}
-.bias-quote{padding-left:14px;border-left:2px solid var(--border-strong);color:var(--muted);font-size:13px;line-height:1.65}
-.bias-quote strong{color:var(--text)}
+        .msg-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            animation: fadeIn 0.2s ease;
+        }
 
-/* ── Persona cards ── */
-.persona-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
-.persona-card{padding:20px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:var(--shadow)}
-.persona-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
-.persona-avatar{display:flex;flex-shrink:0;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border);border-radius:6px;background:var(--surface-soft);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.5px}
-.persona-name{font-size:14px;font-weight:650}
-.persona-role{color:var(--faint);font-size:11px}
-.persona-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.persona-desc{margin-bottom:12px;color:var(--muted);font-size:13px;line-height:1.65}
-.persona-thought{padding:10px 13px;border:1px solid var(--border);border-radius:6px;background:var(--surface-soft);color:var(--muted);font-size:13px;font-style:italic;line-height:1.6}
+        .msg-meta {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-/* ── Consequences ── */
-.consequence-list{display:flex;flex-direction:column;gap:1px;overflow:hidden;margin-bottom:24px;border:1px solid var(--border);border-radius:10px;background:var(--border);box-shadow:var(--shadow-soft)}
-.consequence-item{display:flex;align-items:baseline;gap:12px;padding:14px 18px;background:var(--surface);color:var(--muted);font-size:14px;line-height:1.6}
-.consequence-num{flex-shrink:0;width:18px;color:var(--faint);font-size:11px;font-weight:650}
-.consequence-item strong{color:var(--text)}
+        .msg-sender {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #d6e5ff;
+        }
 
-/* ── Intervention / reflexión ── */
-.intervention-box{margin-top:8px;padding:22px 24px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:var(--shadow)}
-.intervention-title{margin-bottom:14px}
-.intervention-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-.intervention-step{display:flex;align-items:baseline;gap:10px;color:var(--muted);font-size:13.5px}
-.intervention-step::before{content:">";flex-shrink:0;color:var(--text);font-weight:650}
-.reflexion-block{margin-top:4px;padding:20px 22px;border:1px solid #d9d000;border-left:4px solid var(--mark);border-radius:8px;background:var(--mark-bg);box-shadow:var(--shadow-soft)}
-.reflexion-label{margin-bottom:10px;color:#7a7000}
-.reflexion-question{color:var(--text);font-size:15px;font-weight:550;line-height:1.7;font-style:italic}
-.reflexion-note{margin-top:10px;color:#6b6200;font-size:12px;line-height:1.6}
+        .timestamp {
+            font-size: 0.78rem;
+            color: #6f7aa0;
+            font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+        }
 
-/* ── Quiz ── */
-.quiz-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.quiz-meta-label{color:var(--muted);font-size:12px}
-.quiz-meta-score{color:var(--text);font-size:12px;font-weight:650}
-.quiz-prog-wrap{margin-bottom:28px}
-.question-card{margin-bottom:16px;padding:28px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:var(--shadow)}
-.question-num{margin-bottom:10px}
-.question-text{margin-bottom:22px;color:var(--text);font-size:15px;font-weight:550;line-height:1.65}
-.options{display:flex;flex-direction:column;gap:8px}
-.option{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:7px;background:var(--surface-soft);color:var(--muted);cursor:pointer;font-size:14px;line-height:1.55;transition:border-color .15s ease,background .15s ease,color .15s ease}
-.option:hover:not(.disabled){border-color:var(--text);background:var(--surface);color:var(--text)}
-.option.disabled{cursor:not-allowed}
-.option.correct{border-color:var(--green);background:var(--green-bg);color:var(--text)}
-.option.incorrect{border-color:var(--red);background:var(--red-bg);color:var(--text)}
-.opt-letter{flex-shrink:0;width:16px;margin-top:2px;color:var(--faint);font-size:11px;font-weight:650;text-transform:uppercase}
-.option.correct .opt-letter{color:var(--green)}
-.option.incorrect .opt-letter{color:var(--red)}
-.feedback-block{display:none;margin-top:14px;padding:16px 18px;border-radius:7px;font-size:13.5px;line-height:1.75;animation:enter .3s ease}
-.feedback-block.show{display:block}
-.feedback-block.correct{border:1px solid #9fcda2;background:var(--green-bg)}
-.feedback-block.incorrect{border:1px solid #e9aaa3;background:var(--red-bg)}
-.feedback-title{margin-bottom:6px;font-size:13px;font-weight:650}
-.feedback-block.correct .feedback-title{color:var(--green)}
-.feedback-block.incorrect .feedback-title{color:var(--red)}
-.correct-ans-note{display:none;margin-top:10px;padding:9px 13px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);font-size:13px}
-.correct-ans-note.show{display:block}
-.correct-ans-note strong{color:var(--text)}
+        .bubble {
+            background: #11171f;
+            padding: 0.95rem 1.2rem;
+            border-radius: 20px;
+            border-top-left-radius: 6px;
+            color: #eef2ff;
+            font-size: 0.95rem;
+            line-height: 1.55;
+            border: 1px solid #293041;
+        }
 
-/* ── Results ── */
-.results-wrap{display:none;animation:enter .4s ease}
-.results-wrap.show{display:block}
-.result-icon{margin-bottom:12px;font-size:40px}
-.results-score{margin-bottom:4px;color:var(--text);font-size:64px;font-weight:650;line-height:1}
-.results-sublabel{margin-bottom:20px}
-.results-msg{max-width:520px;margin-bottom:8px;color:var(--muted);font-size:14px;line-height:1.75}
-.results-summary{margin:20px 0 24px;display:flex;flex-direction:column;gap:1px;overflow:hidden;border:1px solid var(--border);border-radius:10px;background:var(--border);box-shadow:var(--shadow-soft)}
-.summary-row{display:flex;align-items:baseline;gap:12px;padding:11px 16px;background:var(--surface);font-size:13px;line-height:1.5}
-.summary-q{flex-shrink:0;width:22px;color:var(--faint);font-size:10px;font-weight:650;letter-spacing:.5px;text-transform:uppercase}
-.summary-text{flex:1;color:var(--muted)}
-.summary-badge{flex-shrink:0;font-size:10px;font-weight:650;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:3px}
-.summary-badge.ok{background:var(--green-bg);color:var(--green);border:1px solid #9fcda2}
-.summary-badge.fail{background:var(--red-bg);color:var(--red);border:1px solid #e9aaa3}
+        .alert-bubble {
+            border-left: 4px solid #ff7b72;
+            background: #1e1826;
+        }
 
-/* ── Responsive ── */
-@media(max-width:800px){
-  .shell{grid-template-columns:1fr}
-  .sidebar{position:relative;height:auto;padding:20px;border-right:none;border-bottom:1px solid var(--border)}
-  .stepper{flex-direction:row;flex-wrap:wrap;gap:8px}
-  .step{gap:0}
-  .step-node-wrap,.step-sublabel,.sidebar-footer{display:none}
-  .step-text-wrap{padding-bottom:0}
-  .step-label{min-height:32px;padding:6px 12px;border:1px solid var(--border-strong);border-radius:20px;background:var(--surface);color:var(--muted);font-size:12px;box-shadow:var(--shadow-soft)}
-  .step.active .step-label{border-color:var(--text);background:var(--text);color:#fff}
-  .panel{padding:28px 20px}
-  .panel-title{font-size:24px}
-  .lead{color:#4f4c45}
-  .data-grid,.persona-grid{grid-template-columns:1fr}
-  .msg-meta{flex-wrap:wrap}
-  .msg-time{width:100%;margin-left:0}
-}
-@media(max-width:480px){
-  body{font-size:14px}
-  .panel{padding:22px 16px}
-  .question-card,.bias-card,.persona-card,.intervention-box{padding:20px}
-  .chat-bar,.chat-messages{padding-right:14px;padding-left:14px}
-  .option{padding:12px 13px}
-  .results-score{font-size:54px}
-}
-</style>
+        .bullet-list {
+            margin: 8px 0 4px 20px;
+            list-style-type: disc;
+            color: #cbd5ff;
+        }
+
+        .bullet-list li {
+            margin: 3px 0;
+        }
+
+        .btn-nav {
+            background: #1e293b;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(95deg, #2563eb, #1e40af);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(95deg, #3b82f6, #1e3a8a);
+            transform: scale(0.98);
+        }
+
+        .strategy-panel {
+            background: #0c0f17;
+            border-radius: 1.5rem;
+            border: 1px solid #2a314b;
+            padding: 1.8rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #cbe1ff;
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+            line-height: 1.3;
+        }
+
+        .decision-help {
+            font-size: 0.95rem;
+            color: #9cadda;
+            margin-bottom: 0.5rem;
+            line-height: 1.45;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.2rem 0;
+        }
+
+        .radio-card {
+            background: #0a0e18;
+            border-radius: 20px;
+            padding: 0.85rem 1rem;
+            border: 1px solid #2f364f;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .radio-card.selected {
+            background: #19233c;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+
+        .radio-card input {
+            accent-color: #3b82f6;
+            margin-right: 12px;
+            transform: scale(1.1);
+        }
+
+        .opt-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #dfebff;
+        }
+
+        .opt-desc {
+            font-size: 0.88rem;
+            color: #9aa8cf;
+            margin-left: 28px;
+            margin-top: 6px;
+            line-height: 1.45;
+        }
+
+        .field-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #baceff;
+        }
+
+        textarea {
+            width: 100%;
+            background: #070b12;
+            border: 1px solid #2c344f;
+            border-radius: 20px;
+            padding: 12px 16px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            resize: vertical;
+            margin: 12px 0;
+            min-height: 124px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .my-stance-box {
+            background: #05090f;
+            border-radius: 20px;
+            padding: 1rem;
+            border-left: 4px solid #facc15;
+            color: #cfdfff;
+            margin-top: 1rem;
+        }
+
+        .badge-light {
+            font-size: 0.78rem;
+            background: #18202f;
+            padding: 4px 10px;
+            border-radius: 30px;
+            color: #bdd3ff;
+            display: inline-block;
+            line-height: 1.35;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #2a314b;
+            margin: 10px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .flex-btns {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: #1e2a3a;
+            border: 1px solid #3a4565;
+        }
+
+        .btn-secondary:hover {
+            background: #2d3a50;
+        }
+
+        @media (min-width: 980px) {
+            #screenStrategy .strategy-panel {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+                gap: 1.5rem;
+                align-items: start;
+            }
+
+            .strategy-main {
+                min-width: 0;
+            }
+
+            .strategy-side {
+                position: sticky;
+                top: 1.2rem;
+            }
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+
+            .crisis-app,
+            .chat-container,
+            .strategy-panel {
+                border-radius: 1rem;
+            }
+
+            .screen {
+                padding: 0.85rem;
+            }
+
+            .chat-header {
+                padding: 1rem;
+            }
+
+            .chat-header h2 {
+                font-size: 1.08rem;
+            }
+
+            .encrypted-meta {
+                align-items: flex-start;
+                border-radius: 16px;
+                font-size: 0.8rem;
+                width: 100%;
+            }
+
+            .chat-messages {
+                padding: 1rem;
+                max-height: 64vh;
+                gap: 1rem;
+            }
+
+            .bubble,
+            textarea,
+            .btn-nav,
+            .decision-help {
+                font-size: 1rem;
+            }
+
+            .msg-sender {
+                font-size: 0.98rem;
+            }
+
+            .opt-desc {
+                font-size: 0.95rem;
+            }
+
+            .strategy-panel {
+                padding: 1rem;
+            }
+
+            .flex-btns {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="confetti-container"></div>
-
-<div class="shell">
-
-  <!-- ═══ SIDEBAR ═══ -->
-  <nav class="sidebar" aria-label="Navegación del caso">
-    <div class="sidebar-case-label">Caso 6</div>
-    <div class="sidebar-title">Lo que no dijiste pero todos escucharon</div>
-
-    <div class="stepper" id="stepper">
-      <div class="step active" data-panel="contexto" onclick="showPanel('contexto')">
-        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
-        <div class="step-text-wrap"><div class="step-label">Contexto</div><div class="step-sublabel">La empresa y la situación</div></div>
-      </div>
-      <div class="step" data-panel="chat" onclick="showPanel('chat')">
-        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
-        <div class="step-text-wrap"><div class="step-label">La reunión</div><div class="step-sublabel">Simulación del conflicto</div></div>
-      </div>
-      <div class="step" data-panel="sesgos" onclick="showPanel('sesgos')">
-        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
-        <div class="step-text-wrap"><div class="step-label">Los sesgos</div><div class="step-sublabel">Marco conceptual</div></div>
-      </div>
-      <div class="step" data-panel="personas" onclick="showPanel('personas')">
-        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
-        <div class="step-text-wrap"><div class="step-label">Los interlocutores</div><div class="step-sublabel">Sofía y Diego</div></div>
-      </div>
-      <div class="step" data-panel="consecuencias" onclick="showPanel('consecuencias')">
-        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div><div class="step-line-wrap"></div></div>
-        <div class="step-text-wrap"><div class="step-label">Consecuencias</div><div class="step-sublabel">Impacto organizacional</div></div>
-      </div>
-      <div class="step" data-panel="quiz" onclick="showPanel('quiz')">
-        <div class="step-node-wrap"><div class="step-dot"><div class="step-dot-inner"></div></div></div>
-        <div class="step-text-wrap"><div class="step-label">Quiz</div><div class="step-sublabel">5 preguntas</div></div>
-      </div>
+<div class="crisis-app" id="crisisApp">
+    <div id="screenChat" class="screen">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>🔒 COMITÉ DE CRISIS | Canal Restringido</h2>
+                <div class="encrypted-meta">
+                    <span>🔐 Canal cifrado activado</span>
+                    <span>•</span>
+                    <span>⛔ Acceso restringido al Consejo Estratégico</span>
+                </div>
+                <div style="font-size: 0.78rem; color:#7d8ab0; margin-top: 8px;" id="dynamicDate"></div>
+            </div>
+            <div class="chat-messages" id="chatMessagesScreen1"></div>
+        </div>
+        <button class="btn-nav btn-primary" id="goToStrategyBtn">📋 Continuar al panel de decisión →</button>
+        <p style="font-size: 0.82rem; text-align: center; color:#8b99bd; margin-top: 12px;">Lee atentamente la conversación y luego define tu postura estratégica.</p>
     </div>
 
-    <div class="sidebar-footer">
-      <div class="footer-label" id="footer-label">Quiz: 0 de 5 respondidas</div>
-      <div class="mini-bar-wrap"><div class="mini-bar-fill" id="mini-bar" style="width:0%"></div></div>
+    <div id="screenStrategy" class="screen screen-hidden">
+        <div class="strategy-panel">
+            <div class="strategy-main">
+                <div class="card-title">🎯 Tu postura inicial (Pantalla de decisión)</div>
+                <div class="decision-help">
+                    Elige una entrada al conflicto y redacta tu intervención breve:<br>
+                    <strong>posición, riesgos que priorizas e información que necesitas.</strong>
+                </div>
+                <div class="options-group" id="optionsContainer"></div>
+            </div>
+
+            <div class="strategy-side">
+                <label class="field-label" for="intervencionTexto2">📝 Redacta tu intervención</label>
+                <textarea id="intervencionTexto2" rows="4" placeholder="Ejemplo:
+Posición: Contener daño reputacional, proteger estabilidad interna.
+Riesgos: Fuga masiva de datos, pérdida de confianza de los clientes.
+Info necesaria: Alcance exacto de la filtración, planes de comunicación regulatoria."></textarea>
+                <button class="btn-nav btn-primary" id="enviarPosturaBtn">📢 Enviar postura al Comité</button>
+                <div class="my-stance-box" id="registeredStancePanel">
+                    <span class="badge-light">⚡ Sin intervención aún</span>
+                    <p style="margin-top: 8px; font-size: 0.85rem;">Selecciona una posición y envía tu análisis.</p>
+                </div>
+                <div class="flex-btns">
+                    <button class="btn-nav btn-secondary" id="backToChatBtn">← Volver al chat completo</button>
+                </div>
+                <div class="badge-light" style="margin-top: 16px; background:#111722;">🕒 Tu intervención quedará registrada en el canal de crisis visible al regresar al chat.</div>
+            </div>
+        </div>
     </div>
-  </nav>
-
-  <!-- ═══ MAIN ═══ -->
-  <main class="main">
-
-    <!-- ── PANEL 1: CONTEXTO ── -->
-    <section class="panel active" id="panel-contexto">
-      <div class="eyebrow">Contexto organizacional</div>
-      <h1 class="panel-title">La misma empresa, una nueva tensión</h1>
-      <p class="lead">Han pasado tres semanas desde el conflicto en el chat del proyecto. El equipo lleva a Sofía y Diego a su primera reunión de seguimiento cara a cara. Ambos llegan con sesgos activos acumulados desde el episodio anterior.</p>
-
-      <div class="data-grid">
-        <div class="data-cell"><div class="lbl">Modalidad</div><div class="val">Reunión híbrida (sala + videollamada)</div></div>
-        <div class="data-cell"><div class="lbl">Momento</div><div class="val">3 semanas después del conflicto en el chat</div></div>
-        <div class="data-cell"><div class="lbl">Participantes</div><div class="val">Sofía, Diego y 4 miembros del equipo</div></div>
-        <div class="data-cell"><div class="lbl">Sesgos activos</div><div class="val">6 identificados en la simulación</div></div>
-      </div>
-
-      <div class="highlight-box">Cuando dos personas llegan a una reunión con historia previa de conflicto, los sesgos cognitivos no esperan a que comience la discusión: se activan antes de que nadie diga la primera palabra. La primera impresión ya está formada. La atención ya está filtrada.</div>
-      <button class="btn" onclick="showPanel('chat')">Ver la reunión ›</button>
-    </section>
-
-    <!-- ── PANEL 2: LA REUNIÓN (chat simulado) ── -->
-    <section class="panel" id="panel-chat">
-      <div class="eyebrow">Simulación del conflicto</div>
-      <h1 class="panel-title">La reunión de seguimiento</h1>
-      <p class="lead">Los mensajes del chat grupal antes y durante la reunión. Los marcadores señalan qué sesgo se activa en cada momento.</p>
-
-      <div class="tag-legend">
-        <div class="tag-legend-item"><span class="tag tag-pi">PRIMERA IMPRESIÓN</span> Juicio inicial que persiste</div>
-        <div class="tag-legend-item"><span class="tag tag-as">ATENCIÓN SELECTIVA</span> Solo percibe lo que confirma</div>
-        <div class="tag-legend-item"><span class="tag tag-sc">CONFIRMACIÓN</span> Busca evidencia de su creencia</div>
-        <div class="tag-legend-item"><span class="tag tag-ep">EFECTO PIGMALIÓN</span> La expectativa altera el resultado</div>
-        <div class="tag-legend-item"><span class="tag tag-sd">DISPONIBILIDAD</span> Juzga por lo más recordable</div>
-        <div class="tag-legend-item"><span class="tag tag-td">DICOTÓMICO</span> Todo o nada, sin matices</div>
-      </div>
-
-      <div class="chat-wrap">
-        <div class="chat-bar">
-          <div class="chat-indicator"></div>
-          <div class="chat-channel"># proyecto-lanzamiento-producto — antes de la reunión</div>
-          <div class="chat-count">6 participantes</div>
-        </div>
-        <div class="chat-messages">
-
-          <!-- Mensaje 1: Sofía — primera impresión + atención selectiva -->
-          <article class="msg">
-            <div class="msg-avatar">SO</div>
-            <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Sofía</span>
-                <span class="msg-role">Coordinadora de Producto</span>
-                <span class="msg-time">09:51</span>
-              </div>
-              <div class="msg-text">Recuerden que la reunión empieza a las 10. Por favor, traigan los avances de la semana.</div>
-              <div class="msg-tags">
-                <span class="tag tag-pi">PRIMERA IMPRESIÓN</span>
-                <span class="tag tag-as">ATENCIÓN SELECTIVA</span>
-              </div>
-              <div class="msg-note">Sofía ya decidió que Diego llegará sin preparación. Cualquier señal que lo confirme tendrá más peso que las que lo contradigan.</div>
-            </div>
-          </article>
-
-          <!-- Mensaje 2: Diego — efecto Pigmalión -->
-          <article class="msg">
-            <div class="msg-avatar">DI</div>
-            <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Diego</span>
-                <span class="msg-role">Líder de Diseño</span>
-                <span class="msg-time">09:54</span>
-              </div>
-              <div class="msg-text">Claro. Igual preferiría que revisáramos el documento que mandé ayer antes de entrar.</div>
-              <div class="msg-tags">
-                <span class="tag tag-ep">EFECTO PIGMALIÓN</span>
-              </div>
-              <div class="msg-note">Diego envió un documento con avances detallados. Sofía no lo abrió: su expectativa sobre Diego ya estaba formada y no dejó espacio para nueva información.</div>
-            </div>
-          </article>
-
-          <div class="chat-system-msg"><span>Sofía no responde al mensaje de Diego</span></div>
-
-        </div>
-      </div>
-
-      <!-- Segunda ventana: durante la reunión -->
-      <div class="chat-wrap">
-        <div class="chat-bar">
-          <div class="chat-indicator"></div>
-          <div class="chat-channel"># proyecto-lanzamiento-producto — durante la reunión (10:08)</div>
-          <div class="chat-count">Chat paralelo del equipo</div>
-        </div>
-        <div class="chat-messages">
-
-          <!-- Mensaje 3: Sofía — sesgo de disponibilidad -->
-          <article class="msg">
-            <div class="msg-avatar">SO</div>
-            <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Sofía</span>
-                <span class="msg-role">Coordinadora de Producto</span>
-                <span class="msg-time">10:08</span>
-              </div>
-              <div class="msg-text">La última vez que Diseño tuvo que entregar algo urgente, también hubo demoras. Eso nos costó una semana.</div>
-              <div class="msg-tags">
-                <span class="tag tag-sd">DISPONIBILIDAD</span>
-                <span class="tag tag-sc">CONFIRMACIÓN</span>
-              </div>
-              <div class="msg-note">Sofía trae a la reunión el episodio más recordable —la demora de hace un mes— e ignora las 4 entregas a tiempo de las últimas 6 semanas.</div>
-            </div>
-          </article>
-
-          <!-- Mensaje 4: Diego — pensamiento dicotómico -->
-          <article class="msg">
-            <div class="msg-avatar">DI</div>
-            <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Diego</span>
-                <span class="msg-role">Líder de Diseño</span>
-                <span class="msg-time">10:10</span>
-              </div>
-              <div class="msg-text">O confías en el equipo o no confías. No se puede trabajar así.</div>
-              <div class="msg-tags">
-                <span class="tag tag-td">DICOTÓMICO</span>
-              </div>
-              <div class="msg-note">Diego elimina todo el espacio intermedio: no hay lugar para «confianza parcial», «evidencia mixta» ni «proceso de reconstrucción de confianza». Es todo o nada.</div>
-            </div>
-          </article>
-
-          <!-- Mensaje 5: Sofía — atención selectiva reforzada -->
-          <article class="msg">
-            <div class="msg-avatar">SO</div>
-            <div class="msg-body">
-              <div class="msg-meta">
-                <span class="msg-name">Sofía</span>
-                <span class="msg-role">Coordinadora de Producto</span>
-                <span class="msg-time">10:12</span>
-              </div>
-              <div class="msg-text">No es un tema de confianza. Es un tema de resultados.</div>
-              <div class="msg-tags">
-                <span class="tag tag-as">ATENCIÓN SELECTIVA</span>
-              </div>
-              <div class="msg-note">Sofía no registra que Diego envió avances por escrito. Su atención está enfocada exclusivamente en las demoras, descartando las señales de esfuerzo del equipo.</div>
-            </div>
-          </article>
-
-          <div class="chat-system-msg"><span>Cuatro miembros del equipo activan la cámara en mute — nadie interviene</span></div>
-
-        </div>
-      </div>
-
-      <button class="btn" onclick="showPanel('sesgos')">Analizar los sesgos ›</button>
-    </section>
-
-    <!-- ── PANEL 3: SESGOS ── -->
-    <section class="panel" id="panel-sesgos">
-      <div class="eyebrow">Marco conceptual</div>
-      <h1 class="panel-title">Los seis sesgos en juego</h1>
-      <p class="lead">Cada sesgo opera como un filtro que distorsiona la percepción de la realidad. En reuniones con historia de conflicto, varios filtros se activan de forma simultánea y se refuerzan mutuamente.</p>
-
-      <div class="bias-list">
-
-        <article class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Sesgo de primera impresión</div>
-            <div class="bias-ref">Asch, 1946</div>
-          </div>
-          <div class="bias-desc">La información que recibimos al inicio sobre una persona tiene un peso desproporcionado en cómo la evaluamos después, incluso cuando nueva evidencia la contradice.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Sofía formó una impresión negativa de Diego durante el conflicto del chat. Tres semanas después, llega a la reunión con ese juicio ya establecido, sin espacio para actualizarlo.</div>
-        </article>
-
-        <article class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Atención selectiva</div>
-            <div class="bias-ref">Broadbent, 1958</div>
-          </div>
-          <div class="bias-desc">El cerebro no procesa toda la información disponible: filtra y prioriza según lo que ya cree o espera encontrar. Lo que no encaja con la expectativa simplemente no se registra.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Sofía no abre el documento que Diego envió la noche anterior. En la reunión, no registra las señales de esfuerzo del equipo de Diseño. Solo percibe lo que confirma su hipótesis de desorganización.</div>
-        </article>
-
-        <article class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Sesgo de confirmación</div>
-            <div class="bias-ref">Nickerson, 1998</div>
-          </div>
-          <div class="bias-desc">Tendencia a buscar, interpretar y recordar información que confirma creencias previas, ignorando la que las contradice.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Sofía trae a la reunión el único episodio negativo reciente —la demora de hace un mes— presentándolo como patrón, cuando los datos de las últimas semanas muestran un desempeño consistente.</div>
-        </article>
-
-        <article class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Efecto Pigmalión</div>
-            <div class="bias-ref">Rosenthal y Jacobson, 1968</div>
-          </div>
-          <div class="bias-desc">Las expectativas que una persona tiene sobre otra afectan el comportamiento de ambas. Quien espera poco, da poco espacio. Quien recibe poco espacio, difícilmente puede demostrar lo contrario.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Sofía espera que Diego llegue sin preparación y no abre su documento. Al no recibir reconocimiento por el esfuerzo realizado, Diego entra a la reunión ya a la defensiva. La expectativa negativa se convierte en profecía autocumplida.</div>
-        </article>
-
-        <article class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Sesgo de disponibilidad</div>
-            <div class="bias-ref">Tversky y Kahneman, 1973</div>
-          </div>
-          <div class="bias-desc">Tendemos a evaluar la probabilidad de algo según la facilidad con que podemos recordar ejemplos. Lo más reciente, dramático o emocionalmente intenso aparece como más frecuente o representativo de lo que realmente es.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Sofía usa la demora de hace un mes —el episodio más recordable por su impacto— como evidencia del comportamiento habitual de Diseño, ignorando las entregas a tiempo de las semanas siguientes.</div>
-        </article>
-
-        <article class="bias-card">
-          <div class="bias-header">
-            <div class="bias-name">Pensamiento dicotómico</div>
-            <div class="bias-ref">Beck, 1979</div>
-          </div>
-          <div class="bias-desc">Tendencia a evaluar situaciones, personas o resultados en términos absolutos: bueno o malo, siempre o nunca, todo o nada. Elimina los matices y la posibilidad de posiciones intermedias.</div>
-          <div class="bias-quote"><strong>En el caso:</strong> Diego responde con «O confías en el equipo o no confías», cerrando la posibilidad de una conversación sobre desempeño específico, expectativas concretas o procesos de mejora graduales.</div>
-        </article>
-
-      </div>
-
-      <button class="btn" onclick="showPanel('personas')">Ver a los interlocutores ›</button>
-    </section>
-
-    <!-- ── PANEL 4: PERSONAS ── -->
-    <section class="panel" id="panel-personas">
-      <div class="eyebrow">Análisis de interlocutores</div>
-      <h1 class="panel-title">Sofía y Diego, tres semanas después</h1>
-      <p class="lead">El conflicto del chat no se resolvió: se postergó. Ambos llegan a esta reunión con sesgos ya activos, formados en el episodio anterior. La historia entre ellos actúa ahora como un amplificador.</p>
-
-      <div class="persona-grid">
-        <article class="persona-card">
-          <div class="persona-head">
-            <div class="persona-avatar">SO</div>
-            <div>
-              <div class="persona-name">Sofía</div>
-              <div class="persona-role">Coordinadora de Producto</div>
-            </div>
-          </div>
-          <div class="persona-tags">
-            <span class="tag tag-pi">Primera impresión</span>
-            <span class="tag tag-as">Atención selectiva</span>
-            <span class="tag tag-sd">Disponibilidad</span>
-            <span class="tag tag-sc">Confirmación</span>
-          </div>
-          <div class="persona-desc">Llega a la reunión con la impresión formada hace tres semanas. No abrió el documento de Diego. Durante la reunión, cada señal ambigua la interpreta como falta de compromiso. Los cuatro episodios positivos recientes no tienen cabida en su evaluación.</div>
-          <div class="persona-thought">"Ya sé cómo va a ir esto. Siempre igual con Diseño."</div>
-        </article>
-
-        <article class="persona-card">
-          <div class="persona-head">
-            <div class="persona-avatar">DI</div>
-            <div>
-              <div class="persona-name">Diego</div>
-              <div class="persona-role">Líder de Diseño</div>
-            </div>
-          </div>
-          <div class="persona-tags">
-            <span class="tag tag-ep">Efecto Pigmalión</span>
-            <span class="tag tag-td">Pensamiento dicotómico</span>
-          </div>
-          <div class="persona-desc">Preparó un documento la noche anterior —señal concreta de esfuerzo— pero nadie lo reconoció. Entra a la reunión ya a la defensiva. Cuando Sofía cuestiona los resultados, responde con una posición de todo o nada que cierra cualquier posibilidad de diálogo constructivo.</div>
-          <div class="persona-thought">"Preparé todo y ni lo miraron. No importa lo que hagamos."</div>
-        </article>
-      </div>
-
-      <div class="highlight-box"><strong>El círculo vicioso:</strong> la expectativa negativa de Sofía (efecto Pigmalión) impide que vea el esfuerzo de Diego. Diego, al no recibir reconocimiento, confirma su creencia de que no hay salida posible (pensamiento dicotómico). Ninguno de los dos tiene acceso a la información que rompería el ciclo.</div>
-
-      <button class="btn" onclick="showPanel('consecuencias')">Ver las consecuencias ›</button>
-    </section>
-
-    <!-- ── PANEL 5: CONSECUENCIAS ── -->
-    <section class="panel" id="panel-consecuencias">
-      <div class="eyebrow">Impacto organizacional</div>
-      <h1 class="panel-title">Consecuencias</h1>
-      <p class="lead">El conflicto del chat generó sesgos que ahora contaminan la reunión. El equipo que observa en silencio también absorbe las consecuencias.</p>
-
-      <div class="consequence-list">
-        <div class="consequence-item">
-          <span class="consequence-num">01</span>
-          <span><strong>El esfuerzo documentado de Diego no se evalúa.</strong> La atención selectiva de Sofía hace que el único dato positivo concreto —el documento— quede invisible en la reunión.</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">02</span>
-          <span><strong>La evaluación de desempeño se distorsiona.</strong> El sesgo de disponibilidad convierte un episodio aislado en patrón. Diseño es evaluado por su peor semana, no por sus últimas seis.</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">03</span>
-          <span><strong>El efecto Pigmalión se consolida.</strong> Diego, al no recibir reconocimiento, reduce su motivación para comunicar proactivamente. La expectativa negativa genera el comportamiento que la confirma. (Rosenthal y Jacobson, 1968)</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">04</span>
-          <span><strong>El equipo aprende a no intervenir.</strong> Los cuatro miembros que observan en silencio aprenden que las reuniones de seguimiento son espacios de tensión, no de colaboración. La seguridad psicológica del equipo se erosiona. (Edmondson, 1999)</span>
-        </div>
-        <div class="consequence-item">
-          <span class="consequence-num">05</span>
-          <span><strong>El problema sustantivo permanece sin resolver.</strong> La reunión termina sin acuerdos sobre los retrasos reales: el tiempo se consumió en la gestión de los sesgos, no en la coordinación.</span>
-        </div>
-      </div>
-
-      <div class="intervention-box">
-        <div class="intervention-title">Intervención — Coordinador del equipo</div>
-        <div class="intervention-steps">
-          <div class="intervention-step">Pausar la reunión y nombrar el patrón observado sin señalar culpables</div>
-          <div class="intervention-step">Pedir que cada parte presente evidencia concreta antes de emitir juicios</div>
-          <div class="intervention-step">Reconocer explícitamente el documento enviado por Diego como punto de partida</div>
-          <div class="intervention-step">Separar la evaluación del episodio pasado de los acuerdos futuros</div>
-          <div class="intervention-step">Establecer un protocolo de seguimiento basado en datos, no en impresiones</div>
-        </div>
-
-        <div class="reflexion-block">
-          <div class="reflexion-label">Pregunta para reflexión grupal</div>
-          <div class="reflexion-question">¿Qué información concreta ignoramos en esta reunión porque ya habíamos decidido de antemano lo que íbamos a encontrar?</div>
-          <div class="reflexion-note">Esta pregunta apunta al núcleo del caso: la diferencia entre evaluar con evidencia y evaluar con sesgos activados. Úsala para abrir el debate en clase antes del quiz.</div>
-        </div>
-      </div>
-
-      <button class="btn" style="margin-top:24px" onclick="showPanel('quiz')">Ir al quiz ›</button>
-    </section>
-
-    <!-- ── PANEL 6: QUIZ ── -->
-    <section class="panel" id="panel-quiz">
-      <div class="eyebrow">Evaluación formativa</div>
-      <h1 class="panel-title">Quiz</h1>
-      <p class="lead">5 preguntas situacionales basadas en el caso. Cada una evalúa un sesgo específico. Cada respuesta incluye retroalimentación pedagógica.</p>
-
-      <div class="quiz-meta">
-        <span class="quiz-meta-label" id="q-label">Pregunta 1 de 5</span>
-        <span class="quiz-meta-score" id="q-score">0 puntos</span>
-      </div>
-      <div class="quiz-prog-wrap"><div class="quiz-prog-fill" id="q-prog" style="width:0%"></div></div>
-
-      <div id="quiz-body"></div>
-
-      <div class="results-wrap" id="results-wrap">
-        <div class="result-icon" id="r-icon"></div>
-        <div class="results-score" id="r-score"></div>
-        <div class="results-sublabel">puntos obtenidos</div>
-        <p class="results-msg" id="r-msg"></p>
-        <div class="results-summary" id="r-summary"></div>
-        <button class="btn" onclick="resetQuiz()">Volver a intentar</button>
-      </div>
-
-      <button class="btn ghost hidden" id="next-btn" onclick="nextQuestion()">Siguiente ›</button>
-    </section>
-
-  </main>
 </div>
 
 <script>
-const questions = [
-  {
-    shortTitle: "Por qué Sofía no registra el documento de Diego",
-    sesgo: "Atención selectiva",
-    text: "Diego envió un documento con avances detallados la noche anterior a la reunión. Sofía no lo abrió y, durante la reunión, tampoco hizo referencia a él. En cambio, centró toda su intervención en la demora ocurrida hace un mes. ¿Qué sesgo explica mejor el comportamiento de Sofía?",
-    options: [
-      "Sesgo de disponibilidad, porque Sofía recuerda con mayor facilidad los episodios negativos recientes.",
-      "Atención selectiva, porque Sofía filtra la información disponible y solo percibe lo que confirma su hipótesis de desorganización.",
-      "Efecto Pigmalión, porque Sofía espera que Diego fracase y eso altera el resultado de la reunión.",
-      "Sesgo de primera impresión, porque el juicio inicial sobre Diego sigue vigente tres semanas después."
-    ],
-    correct: 1,
-    feedbackCorrect: "La atención selectiva explica por qué Sofía no registra el documento: su cerebro filtra la información disponible según lo que ya espera encontrar. El documento existe, está accesible, pero no encaja con su hipótesis de desorganización y, por lo tanto, no entra en su campo perceptivo. Broadbent (1958) describió este mecanismo como un cuello de botella cognitivo: no procesamos toda la información disponible, sino aquella que pasa el filtro de nuestras expectativas previas.",
-    feedbackIncorrect: "La respuesta correcta es la atención selectiva. Aunque el sesgo de disponibilidad y el de primera impresión también están presentes en el caso, ninguno explica específicamente por qué Sofía ignora un dato concreto y accesible como el documento. La atención selectiva opera como filtro perceptivo: no se trata de que Sofía olvide o distorsione el documento, sino de que literalmente no lo procesa porque no encaja con su expectativa."
-  },
-  {
-    shortTitle: "La demora de hace un mes usada como patrón",
-    sesgo: "Sesgo de disponibilidad",
-    text: "En la reunión, Sofía afirma: «La última vez que Diseño tuvo que entregar algo urgente, también hubo demoras. Eso nos costó una semana.» Los registros del proyecto muestran que en las últimas 6 semanas el equipo de Diseño entregó a tiempo en 4 de las 5 iteraciones. ¿Qué sesgo opera en el argumento de Sofía?",
-    options: [
-      "Sesgo de confirmación, porque Sofía selecciona la evidencia que respalda su posición.",
-      "Pensamiento dicotómico, porque Sofía divide el desempeño de Diseño en bueno o malo sin matices.",
-      "Sesgo de disponibilidad, porque el episodio de demora —por su impacto emocional— es más fácil de recordar y parece más representativo de lo que realmente es.",
-      "Generalización excesiva, porque Sofía concluye que Diseño siempre falla a partir de un solo caso."
-    ],
-    correct: 2,
-    feedbackCorrect: "El sesgo de disponibilidad opera cuando evaluamos la probabilidad o frecuencia de algo según la facilidad con que podemos traer ejemplos a la mente (Tversky y Kahneman, 1973). La demora de hace un mes es más recordable que las cuatro entregas a tiempo porque fue más intensa emocionalmente. Esa mayor accesibilidad en la memoria hace que Sofía la perciba como más representativa del comportamiento del equipo, distorsionando su evaluación del desempeño real.",
-    feedbackIncorrect: "La respuesta correcta es el sesgo de disponibilidad. El sesgo de confirmación también está presente en el caso, pero explica por qué Sofía busca ese dato, no por qué ese dato específico —y no otro— le resulta tan convincente. La clave aquí es la accesibilidad mnemónica: el episodio de demora es fácil de recordar porque fue impactante, y esa facilidad de acceso lo hace parecer frecuente y representativo. Eso es disponibilidad, no confirmación."
-  },
-  {
-    shortTitle: "La expectativa de Sofía y el efecto en Diego",
-    sesgo: "Efecto Pigmalión",
-    text: "Sofía espera que Diego llegue sin preparación a la reunión. No abre el documento que él envió. Diego, al no recibir ningún reconocimiento por el esfuerzo realizado, entra a la reunión a la defensiva y responde de forma reactiva. Al finalizar, Sofía comenta: «Ves, exactamente lo que esperaba.» ¿Qué mecanismo describe este proceso?",
-    options: [
-      "Sesgo de primera impresión, porque el juicio inicial de Sofía sobre Diego no cambió con el tiempo.",
-      "Efecto Pigmalión, porque la expectativa negativa de Sofía condicionó su comportamiento, que a su vez condicionó la respuesta de Diego, generando el resultado esperado.",
-      "Sesgo de confirmación, porque Sofía interpreta la reacción defensiva de Diego como prueba de su hipótesis.",
-      "Pensamiento catastrófico, porque Diego asume que la reunión va a salir mal antes de que comience."
-    ],
-    correct: 1,
-    feedbackCorrect: "El efecto Pigmalión (Rosenthal y Jacobson, 1968) describe cómo las expectativas de una persona sobre otra modifican el comportamiento de ambas. Sofía espera poco de Diego → no abre su documento → Diego no recibe reconocimiento → Diego entra a la defensiva → Sofía interpreta esa reactividad como confirmación de su expectativa original. La profecía se autocumple no porque Diego sea incompetente, sino porque el contexto creado por la expectativa negativa no le permitió demostrar lo contrario.",
-    feedbackIncorrect: "La respuesta correcta es el efecto Pigmalión. El sesgo de confirmación explica por qué Sofía interpreta la reacción de Diego como prueba de su hipótesis, pero no explica el mecanismo por el cual la expectativa alteró el comportamiento de Diego antes de que la reunión comenzara. El efecto Pigmalión añade una dimensión relacional que el sesgo de confirmación no captura: no es solo que Sofía filtre información, sino que su actitud cambió las condiciones en las que Diego tuvo que actuar."
-  },
-  {
-    shortTitle: "«O confías en el equipo o no confías»",
-    sesgo: "Pensamiento dicotómico",
-    text: "Cuando Sofía cuestiona los resultados del equipo de Diseño, Diego responde: «O confías en el equipo o no confías. No se puede trabajar así.» Esta respuesta cierra cualquier posibilidad de conversación sobre desempeño específico, expectativas concretas o mejoras graduales. ¿Qué sesgo cognitivo refleja la respuesta de Diego?",
-    options: [
-      "Generalización excesiva, porque Diego concluye que toda la relación laboral está comprometida.",
-      "Pensamiento catastrófico, porque Diego asume que la situación no tiene solución posible.",
-      "Pensamiento dicotómico, porque Diego elimina todos los matices y posiciones intermedias, reduciendo la situación a dos únicas opciones absolutas.",
-      "Sesgo de disponibilidad, porque Diego trae a la conversación el episodio más impactante de su relación con Sofía."
-    ],
-    correct: 2,
-    feedbackCorrect: "El pensamiento dicotómico o «todo o nada» (Beck, 1979) opera cuando evaluamos situaciones en términos absolutos, sin posibilidad de gradaciones. «O confías o no confías» elimina todo el espacio donde podría ocurrir una conversación útil: confianza parcial, confianza en proceso de reconstrucción, confianza condicionada a acuerdos específicos. Al reducir la situación a dos únicas opciones, Diego cierra el espacio de negociación y hace imposible cualquier acuerdo concreto.",
-    feedbackIncorrect: "La respuesta correcta es el pensamiento dicotómico. Aunque el pensamiento catastrófico y la generalización excesiva también pueden estar presentes en el estado emocional de Diego, no describen con precisión lo que ocurre en esta respuesta específica. La clave está en la estructura lógica de la afirmación: «O A o B», sin ninguna posibilidad intermedia. Esa es la marca distintiva del pensamiento dicotómico."
-  },
-  {
-    shortTitle: "Cómo se forma y persiste el juicio de Sofía sobre Diego",
-    sesgo: "Sesgo de primera impresión",
-    text: "Tres semanas antes de esta reunión, Sofía y Diego tuvieron un conflicto en el chat del proyecto. Desde entonces, Sofía no actualizó su evaluación de Diego a pesar de que el equipo de Diseño mejoró su desempeño y Diego envió un documento con avances la noche anterior a la reunión. ¿Qué sesgo explica la persistencia de ese juicio negativo?",
-    options: [
-      "Sesgo de disponibilidad, porque el conflicto del chat es más fácil de recordar que los episodios positivos posteriores.",
-      "Sesgo de primera impresión, porque la información recibida al inicio sobre Diego tiene un peso desproporcionado que no se actualiza con nueva evidencia.",
-      "Atención selectiva, porque Sofía filtra la información positiva sobre Diego durante las últimas semanas.",
-      "Sesgo de confirmación, porque Sofía busca activamente evidencia que respalde su visión negativa de Diego."
-    ],
-    correct: 1,
-    feedbackCorrect: "El sesgo de primera impresión (Asch, 1946) describe cómo la información inicial sobre una persona tiene un efecto ancla desproporcionado en nuestra evaluación posterior. No es solo que Sofía recuerde mejor el conflicto —eso sería disponibilidad— sino que ese episodio inicial fijó un marco interpretativo que resiste la actualización. La nueva evidencia —las entregas a tiempo, el documento— existe, pero no logra modificar el juicio porque el ancla inicial es demasiado fuerte. Este es el mecanismo de persistencia, no solo de acceso.",
-    feedbackIncorrect: "La respuesta correcta es el sesgo de primera impresión. Es importante distinguirlo de los otros sesgos presentes en el caso. El sesgo de disponibilidad explica por qué el conflicto es fácil de recordar. La atención selectiva explica por qué Sofía no registra la evidencia positiva. El sesgo de confirmación explica por qué busca evidencia negativa. Pero ninguno de estos tres explica por qué el juicio inicial, formado hace tres semanas, tiene tanto peso que resiste la actualización: eso es específicamente el efecto ancla de la primera impresión."
-  }
-];
+    const chatMessages = [
+        {
+            sender: "Dirección Ejecutiva",
+            timestamp: "",
+            content: `Hace 47 minutos se confirmó una filtración crítica de datos que podría afectar a miles de clientes activos en múltiples regiones. La situación ya está generando presión externa:\n• medios especializados están solicitando declaraciones;\n• inversionistas exigen una respuesta inmediata;\n• redes sociales comienzan a especular sobre el alcance del incidente.\n\nEn este momento NO existe consenso interno sobre cómo responder.\n\nEl Directorio ha convocado una reunión extraordinaria del Consejo Estratégico.\n\nLa decisión que se tome durante las próximas horas podría definir:\n• la continuidad del negocio,\n• la confianza de los clientes,\n• la estabilidad interna,\n• y el futuro de la organización.\n\nTodos los participantes deben incorporarse inmediatamente a la sesión de crisis.`,
+            alert: false
+        },
+        {
+            sender: "Jefe de Comunicaciones",
+            timestamp: "hace 41 min",
+            content: "Recibido. Necesitamos decidir si salimos primero con una declaración controlada o si esperamos cifras confirmadas. Los medios no van a esperar demasiado.",
+            alert: false
+        },
+        {
+            sender: "Legal y Asuntos Corporativos",
+            timestamp: "hace 22 min",
+            content: "Tenemos 72 horas desde la detección para notificar a reguladores según normativa vigente. Ya corren 47 minutos. Cualquier declaración pública debe pasar por legal.",
+            alert: false
+        },
+        {
+            sender: "Dirección Ejecutiva",
+            timestamp: "hace 8 min",
+            content: "🔴 Un medio especializado acaba de publicar información no confirmada sobre la filtración. #NovaGenLeak empieza a ser tendencia.",
+            alert: true
+        },
+        {
+            sender: "Dirección Ejecutiva",
+            timestamp: "hace 3 min",
+            content: "[NOVAGEN ALERT] ⚠️ Empleados comienzan a solicitar información interna sobre posibles responsabilidades.",
+            alert: true
+        }
+    ];
 
-let currentQ = 0;
-let score = 0;
-let answered = false;
-let userResults = new Array(questions.length).fill(null);
+    const stanceOptions = [
+        { id: "A", name: "Posición A", description: "Contener daño reputacional y estabilidad interna. Comunicación controlada, sin especulaciones. Blindar la operación." },
+        { id: "B", name: "Posición B", description: "Transparencia radical: asumir responsabilidad pública de inmediato, declaración oficial con disculpa y hoja de ruta." },
+        { id: "C", name: "Posición C", description: "Ganar tiempo estratégico: escalar a comité externo, solicitar auditoría forense antes de declarar. No emitir sin cifras validadas." }
+    ];
 
-function showPanel(id) {
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.getElementById("panel-" + id).classList.add("active");
-  document.querySelectorAll(".step").forEach(s => {
-    s.classList.remove("active");
-    if (s.dataset.panel === id) s.classList.add("active");
-  });
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  document.querySelector(".main").scrollTo({ top: 0, behavior: "smooth" });
-}
+    let selectedStanceId = null;
+    let lastIntervention = null;
+    let dynamicMessages = [];
 
-function launchConfetti() {
-  const container = document.getElementById("confetti-container");
-  const colors = ["#1a1917","#e8e300","#5b8dd9","#2e7d32","#c0392b"];
-  for (let i = 0; i < 48; i++) {
-    const el = document.createElement("div");
-    el.className = "confetti-piece";
-    el.style.left = Math.random() * 100 + "%";
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.animationDelay = Math.random() * 0.4 + "s";
-    el.style.animationDuration = Math.random() * 2 + 2 + "s";
-    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
-    container.appendChild(el);
-    setTimeout(() => el.remove(), 3600);
-  }
-}
+    const screenChat = document.getElementById("screenChat");
+    const screenStrategy = document.getElementById("screenStrategy");
+    const goToStrategyBtn = document.getElementById("goToStrategyBtn");
+    const backToChatBtn = document.getElementById("backToChatBtn");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const intervencionText = document.getElementById("intervencionTexto2");
+    const enviarBtn = document.getElementById("enviarPosturaBtn");
+    const registeredPanel = document.getElementById("registeredStancePanel");
+    const chatContainer = document.getElementById("chatMessagesScreen1");
+    const dynamicDateSpan = document.getElementById("dynamicDate");
 
-function updateBar() {
-  const respondidas = userResults.filter(r => r !== null).length;
-  const pctSidebar = (respondidas / questions.length) * 100;
-  const pctBar = (currentQ / questions.length) * 100;
+    function getCurrentDateFormatted() {
+        const now = new Date();
+        const dias = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
+        const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+        return `${dias[now.getDay()]}, ${now.getDate()} DE ${meses[now.getMonth()]} ${now.getFullYear()}`;
+    }
 
-  document.getElementById("q-prog").style.width = pctBar + "%";
-  document.getElementById("q-label").textContent = "Pregunta " + (currentQ + 1) + " de " + questions.length;
-  document.getElementById("q-score").textContent = score + " punto" + (score !== 1 ? "s" : "");
-  document.getElementById("footer-label").textContent = "Quiz: " + respondidas + " de " + questions.length + " respondidas";
-  document.getElementById("mini-bar").style.width = pctSidebar + "%";
-}
+    function updateHeaderDate() {
+        if (dynamicDateSpan) dynamicDateSpan.innerText = getCurrentDateFormatted();
+    }
 
-function renderQuestion() {
-  answered = false;
-  const q = questions[currentQ];
-  const letters = ["A","B","C","D"];
+    function formatMessageContent(text) {
+        const lines = escapeHtml(text).split("\n");
+        let inList = false;
+        const result = [];
 
-  document.getElementById("quiz-body").innerHTML = `
-    <div class="question-card">
-      <div class="question-num">Pregunta ${currentQ + 1} de ${questions.length} · Sesgo evaluado: ${q.sesgo}</div>
-      <div class="question-text">${q.text}</div>
-      <div class="options">
-        ${q.options.map((opt, i) => `
-          <div class="option" id="opt-${i}" onclick="selectOption(${i})">
-            <span class="opt-letter">${letters[i]}</span>
-            <span>${opt}</span>
-          </div>`).join("")}
-      </div>
-      <div class="feedback-block" id="fb"></div>
-      <div class="correct-ans-note" id="ca-note"></div>
-    </div>`;
+        for (const line of lines) {
+            if (line.trim().startsWith("•")) {
+                if (!inList) {
+                    result.push('<ul class="bullet-list">');
+                    inList = true;
+                }
+                result.push(`<li>${line.replace(/^\s*•\s*/, "")}</li>`);
+            } else {
+                if (inList) {
+                    result.push("</ul>");
+                    inList = false;
+                }
+                result.push(line ? line : "<br>");
+            }
+        }
 
-  document.getElementById("results-wrap").classList.remove("show");
-  document.getElementById("quiz-body").style.display = "block";
-  document.getElementById("next-btn").classList.add("hidden");
-  updateBar();
-}
+        if (inList) result.push("</ul>");
+        return result.join("");
+    }
 
-function selectOption(idx) {
-  if (answered) return;
-  answered = true;
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>"]/g, m => {
+            if (m === "&") return "&amp;";
+            if (m === "<") return "&lt;";
+            if (m === ">") return "&gt;";
+            return "&quot;";
+        });
+    }
 
-  const q = questions[currentQ];
-  const ok = idx === q.correct;
-  userResults[currentQ] = ok;
+    function renderMessage(container, sender, timestamp, content, isAlert = false) {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "msg-item";
+        const metaHtml = `<div class="msg-meta"><div class="msg-sender">📌 ${escapeHtml(sender)}</div>${timestamp ? `<div class="timestamp">${escapeHtml(timestamp)}</div>` : ""}</div>`;
+        const bubbleClass = isAlert ? "bubble alert-bubble" : "bubble";
+        msgDiv.innerHTML = metaHtml + `<div class="${bubbleClass}">${formatMessageContent(content)}</div>`;
+        container.appendChild(msgDiv);
+    }
 
-  document.querySelectorAll(".option").forEach(o => o.classList.add("disabled"));
-  document.getElementById("opt-" + idx).classList.add(ok ? "correct" : "incorrect");
-  if (!ok) document.getElementById("opt-" + q.correct).classList.add("correct");
+    function loadFullChat() {
+        chatContainer.innerHTML = "";
+        for (const msg of chatMessages) {
+            renderMessage(chatContainer, msg.sender, msg.timestamp || "", msg.content, msg.alert);
+        }
+        for (const dyn of dynamicMessages) {
+            renderMessage(chatContainer, dyn.sender, dyn.timestamp, dyn.content, false);
+        }
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 
-  if (ok) { score += 10; launchConfetti(); }
+    function addUserInterventionToChat(senderName, timestamp, content) {
+        dynamicMessages.push({ sender: senderName, timestamp, content, alert: false });
+        if (!screenChat.classList.contains("screen-hidden")) loadFullChat();
+    }
 
-  updateBar();
+    function buildStanceOptions() {
+        optionsContainer.innerHTML = "";
+        stanceOptions.forEach(opt => {
+            const radioDiv = document.createElement("label");
+            radioDiv.className = "radio-card";
+            if (selectedStanceId === opt.id) radioDiv.classList.add("selected");
 
-  const fb = document.getElementById("fb");
-  fb.className = "feedback-block show " + (ok ? "correct" : "incorrect");
-  fb.innerHTML = `<div class="feedback-title">${ok ? "Correcto" : "Incorrecto"}</div><p>${ok ? q.feedbackCorrect : q.feedbackIncorrect}</p>`;
+            const radioInput = document.createElement("input");
+            radioInput.type = "radio";
+            radioInput.name = "crisisStance";
+            radioInput.value = opt.id;
+            if (selectedStanceId === opt.id) radioInput.checked = true;
 
-  if (!ok) {
-    const note = document.getElementById("ca-note");
-    note.classList.add("show");
-    note.innerHTML = `<strong>Respuesta correcta:</strong> ${q.options[q.correct]}`;
-  }
+            const labelSpan = document.createElement("span");
+            labelSpan.className = "opt-title";
+            labelSpan.innerText = opt.name;
 
-  document.getElementById("next-btn").classList.remove("hidden");
-}
+            const descSpan = document.createElement("div");
+            descSpan.className = "opt-desc";
+            descSpan.innerText = opt.description;
 
-function nextQuestion() {
-  currentQ++;
-  if (currentQ >= questions.length) showResults();
-  else renderQuestion();
-}
+            radioDiv.appendChild(radioInput);
+            radioDiv.appendChild(labelSpan);
+            radioDiv.appendChild(descSpan);
 
-function showResults() {
-  document.getElementById("quiz-body").style.display = "none";
-  document.getElementById("next-btn").classList.add("hidden");
-  document.getElementById("q-prog").style.width = "100%";
-  document.getElementById("q-label").textContent = "Completado";
-  document.getElementById("q-score").textContent = score + " puntos";
-  document.getElementById("footer-label").textContent = "Quiz completado · " + score + "/50 pts";
-  document.getElementById("mini-bar").style.width = "100%";
+            radioDiv.addEventListener("click", () => {
+                selectedStanceId = opt.id;
+                radioInput.checked = true;
+                document.querySelectorAll(".radio-card").forEach(card => card.classList.remove("selected"));
+                radioDiv.classList.add("selected");
+            });
 
-  const pct = score / (questions.length * 10) * 100;
-  let icon, msg;
+            optionsContainer.appendChild(radioDiv);
+        });
+    }
 
-  if (pct >= 100) {
-    icon = "🏆";
-    msg = "Dominio excepcional. Identificaste con precisión cada sesgo y comprendiste por qué se distingue de los otros presentes en el mismo caso. Eso es análisis, no memorización.";
-    launchConfetti();
-  } else if (pct >= 80) {
-    icon = "🎯";
-    msg = "Comprensión sólida. Revisa el feedback de las preguntas incorrectas, prestando atención a la diferencia entre sesgos que comparten síntomas —como disponibilidad y confirmación, o primera impresión y atención selectiva.";
-  } else if (pct >= 60) {
-    icon = "📚";
-    msg = "Comprensión adecuada. Vuelve al panel de sesgos y compara cómo cada uno opera en Sofía y en Diego por separado. El mismo comportamiento puede tener fuentes diferentes.";
-  } else {
-    icon = "💪";
-    msg = "Conviene recorrer el caso completo de nuevo, con atención especial a las notas de cada mensaje del chat. Cada nota señala exactamente qué sesgo está activo y por qué.";
-  }
+    function updateRegisteredDisplay(option, text) {
+        if (!option || !text?.trim()) {
+            registeredPanel.innerHTML = `<span class="badge-light">⚠️ POSTURA NO REGISTRADA</span><p style="margin-top: 8px; font-size: 0.85rem;">Aún no has enviado ninguna intervención.</p>`;
+            return;
+        }
 
-  document.getElementById("r-icon").textContent = icon;
-  document.getElementById("r-score").textContent = score + "/50";
-  document.getElementById("r-msg").textContent = msg;
+        const preview = text.length > 200 ? text.substring(0, 200) + "..." : text;
+        registeredPanel.innerHTML = `
+            <span class="badge-light" style="background:#facc1510; color:#ffdf8c;">📌 POSTURA ACTIVA: ${escapeHtml(option.name)}</span>
+            <div style="font-size: 0.82rem; margin: 6px 0; color:#ffdd88;">${escapeHtml(option.description)}</div>
+            <hr><div style="font-size: 0.92rem;">💬 "${escapeHtml(preview)}"</div>
+            <div style="font-size: 0.76rem; color:#8fa2d0; margin-top: 8px;">✓ Registrada · ${new Date().toLocaleTimeString()}</div>
+        `;
+    }
 
-  const summaryHtml = userResults.map((ok, i) => `
-    <div class="summary-row">
-      <span class="summary-q">P${i+1}</span>
-      <span class="summary-text">${questions[i].shortTitle}</span>
-      <span class="summary-badge ${ok ? "ok" : "fail"}">${ok ? "Correcto" : "Incorrecto"}</span>
-    </div>`).join("");
-  document.getElementById("r-summary").innerHTML = summaryHtml;
+    function getSimulatedTimestamp() {
+        return `hace ${Math.floor(Math.random() * 3) + 1} min`;
+    }
 
-  document.getElementById("results-wrap").classList.add("show");
-}
+    function enviarPostura() {
+        if (!selectedStanceId) return alert("Debes seleccionar una postura: Posición A, B o C.");
+        const interventionRaw = intervencionText.value.trim();
+        if (!interventionRaw) return alert("Escribe una intervención breve.");
 
-function resetQuiz() {
-  currentQ = 0; score = 0; answered = false;
-  userResults = new Array(questions.length).fill(null);
-  document.getElementById("results-wrap").classList.remove("show");
-  document.getElementById("quiz-body").style.display = "block";
-  renderQuestion();
-  document.querySelector(".main").scrollTo({ top: 0, behavior: "smooth" });
-}
+        const chosenOption = stanceOptions.find(opt => opt.id === selectedStanceId);
+        if (!chosenOption) return;
 
-renderQuestion();
+        const senderName = `Tú (Consejero · ${chosenOption.name})`;
+        const contentChat = `🎯 Postura adoptada: ${chosenOption.description}\n\n📢 Intervención estratégica:\n${interventionRaw}`;
+        addUserInterventionToChat(senderName, getSimulatedTimestamp(), contentChat);
+
+        lastIntervention = { option: chosenOption, text: interventionRaw };
+        updateRegisteredDisplay(chosenOption, interventionRaw);
+        intervencionText.value = "";
+        intervencionText.placeholder = "✅ Enviada. Puedes cambiar de opinión.";
+
+        const toast = document.createElement("div");
+        toast.innerText = "✔ Intervención incorporada al canal de crisis";
+        toast.style.cssText = "position:fixed; bottom:20px; right:20px; background:#18222f; color:#c1e0ff; padding:10px 18px; border-radius:30px; font-size:0.9rem; border-left:4px solid #3b82f6; z-index:2000;";
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+
+    function showScreenChat() {
+        screenChat.classList.remove("screen-hidden");
+        screenStrategy.classList.add("screen-hidden");
+        loadFullChat();
+    }
+
+    function showScreenStrategy() {
+        screenChat.classList.add("screen-hidden");
+        screenStrategy.classList.remove("screen-hidden");
+        buildStanceOptions();
+        if (lastIntervention) updateRegisteredDisplay(lastIntervention.option, lastIntervention.text);
+        else updateRegisteredDisplay(null, "");
+    }
+
+    function init() {
+        updateHeaderDate();
+        dynamicMessages = [];
+        loadFullChat();
+        buildStanceOptions();
+        selectedStanceId = null;
+        lastIntervention = null;
+        updateRegisteredDisplay(null, "");
+        intervencionText.value = "";
+        goToStrategyBtn.addEventListener("click", showScreenStrategy);
+        backToChatBtn.addEventListener("click", showScreenChat);
+        enviarBtn.addEventListener("click", enviarPostura);
+        showScreenChat();
+    }
+
+    init();
 </script>
 </body>
 </html>
